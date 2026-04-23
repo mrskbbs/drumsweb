@@ -1,0 +1,22 @@
+#output{
+    position: relative;
+}
+
+#output > #block{
+    opacity: .5;
+    position: absolute;
+    top: 0em;
+    background-color: blueviolet;
+    display: block;
+    height: 100%;
+    width: 1em;
+    transition-duration: 100ms;
+    transition: transform cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.block-animation{
+    animation-name: move;
+    animation-duration: 4s;
+    animation-timing-function: linear;
+    animation-play-state: running;
+}
