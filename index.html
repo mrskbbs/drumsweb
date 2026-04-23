@@ -4,20 +4,25 @@
         <link rel="stylesheet" href="index.css" />
         <script src="http://unpkg.com/tone"></script>
         <script src="https://unpkg.com/vexflow@3.0.9/releases/vexflow-min.js"></script>
+        <script src="./scripts/utils.js" type="module"></script>
+        <script src="./scripts/exercises/rhythms.js" type="module"></script>
+        <script src="./scripts/stave.js" type="module"></script>
     </head>
     <body>
         <details open>
             <summary >
                 Common rythms exercise 
             </summary>
-            <h1>BPM</h1>
-            <p id="bpm_value"></p>
-            <input id="bpm" type="range" min="30" max="250" step="1.0"/>
-            <button id="btn_switch">Run</button>
-            <div id="output">
-                <div id="block"></div>
-            </div>
+            <template id="common_rythms_template">
+            </template>
+            <!-- <h1>BPM</h1> -->
+            <!-- <p id="bpm_value"></p> -->
+            <!-- <input id="bpm" type="range" min="30" max="250" step="1.0"/> -->
+            <!-- <button id="btn_switch">Run</button> -->
+            <!-- <div id="output"> -->
+            <!--     <div id="block"></div> -->
+            <!-- </div> -->
         </details>
     </body>
-    <script src="index.js"></script>
+    <script src="index.js" type="module"></script>
 </html>
