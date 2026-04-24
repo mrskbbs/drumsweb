@@ -44,15 +44,19 @@ export class StaveComponent extends HTMLElement {
     num_beats;
     beat_value;
 
-    constructor(notes, num_beats = 4, beat_value = 4){
+    constructor(id, player, notes, num_beats = 4, beat_value = 4){
         super();
-
+        
         this.shadow = this.attachShadow({ mode: "open" });
         this.shadow.append(template.content.cloneNode(true));
+
+        this.id = id;
+        this.player = player;
         this.notes = notes;
         this.num_beats = num_beats;
         this.beat_value = beat_value;
         this.note_ind = 0;
+        this.is_playing = false;
     }
 
     connectedCallback(){
@@ -74,9 +78,8 @@ export class StaveComponent extends HTMLElement {
         this.bpm_input.addEventListener("input", (e) => {
             this.bpm = Number(e.currentTarget.value);
             this.bpm_display.innerHTML = `${this.bpm}`
-            // TODO: add support for local Tone Transport 
-            Tone.Transport.bpm.rampTo(this.bpm);
-            
+            this.player.bpm = this.bpm
+
             // Smooth transition
             this.pos_block.style.transitionDuration = `${
                 blockTransitionDuration(this.bpm, Number(this.bpm_input.min))
@@ -99,6 +102,8 @@ export class StaveComponent extends HTMLElement {
             beatValue: this.beat_value,
         });
 
+        console.log(this.notes);
+
         voice.addTickables(this.notes);
 
         new Vex.Flow.Formatter().joinVoices([voice]).format([voice], 400);
@@ -106,10 +111,38 @@ export class StaveComponent extends HTMLElement {
         voice.draw(context, stave);
         stave.setContext(context).draw();
 
-        this.pos_block.style.width = `${this.notes[0].getBoundingBox().width}px`;
-        this.pos_block.style.transform = `translateX(${this.notes[0].getBoundingBox().x}px)`
-
         // player logic itself
+        this.btn_play.addEventListener("click", (e) => {
+            this.is_playing = !this.is_playing;
+            e.currentTarget.textContent = this.is_playing ? "Stop" : "Play";
+            if (this.is_playing){
+                this.note_ind = 0;
+                this.player.bpm = this.bpm;
+                this.player.changeTrack({
+                    id: this.id, 
+                    notes: this.notes, // array of VexFlow note objects
+                    metronome: {
+                        dur: "4n",
+                    },
+                    sequence: {
+                        callback: (time, note) => {
+                            console.log(time, note);
+                            const bb = this.notes[this.note_ind].getBoundingBox();
+                            this.pos_block.style.width = `${bb.width}px`;
+                            this.pos_block.style.transform = `translateX(${bb.x}px)`
+                            this.note_ind++;
+                            if(this.note_ind >= this.notes.length) 
+                                this.note_ind = 0;
+                        },
+                        dur: "16n",
+                    },
+                    
+                });
+                this.player.start();
+            } else{
+                this.player.stop();
+            }
+        });
     }
 
     disconnectedCallback(){
