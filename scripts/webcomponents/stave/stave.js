@@ -1,8 +1,9 @@
-import { blockTransitionDuration } from "./utils.js";
+import { blockTransitionDuration } from "/scripts/utils.js";
 
 const template = document.createElement("template");
 template.innerHTML = 
 `
+<link rel="stylesheet" href="scripts/webcomponents/stave/stave.css">
 <div>
     <span>
         <p>BPM:</p>
@@ -14,24 +15,26 @@ template.innerHTML =
         <div class="pos_block"></div>
     </div>
 </div>
-<style>
-#stave_canvas{
-    position: relative;
-}
-
-.pos_block{
-    opacity: .5;
-    position: absolute;
-    top: 0em;
-    background-color: blueviolet;
-    display: block;
-    height: 100%;
-    width: 1em;
-    transition-duration: 100ms;
-    transition: transform cubic-bezier(0.165, 0.84, 0.44, 1);
-}
-</style>
 `;
+
+// <style>
+// #stave_canvas{
+//     position: relative;
+// }
+//
+// .pos_block{
+//     opacity: .5;
+//     position: absolute;
+//     top: 0em;
+//     background-color: blueviolet;
+//     display: block;
+//     height: 100%;
+//     width: 1em;
+//     transition-duration: 100ms;
+//     transition: transform cubic-bezier(0.165, 0.84, 0.44, 1);
+// }
+// </style>
+// `;
 
 export class StaveComponent extends HTMLElement { 
     shadow;
@@ -77,8 +80,8 @@ export class StaveComponent extends HTMLElement {
 
         this.bpm_input.addEventListener("input", (e) => {
             this.bpm = Number(e.currentTarget.value);
-            this.bpm_display.innerHTML = `${this.bpm}`
-            this.player.bpm = this.bpm
+            this.bpm_display.innerHTML = `${this.bpm}`;
+            if (this.id === this.player.track?.id) this.player.bpm = this.bpm;
 
             // Smooth transition
             this.pos_block.style.transitionDuration = `${
@@ -102,7 +105,7 @@ export class StaveComponent extends HTMLElement {
             beatValue: this.beat_value,
         });
 
-        console.log(this.notes);
+        // console.log(this.notes);
 
         voice.addTickables(this.notes);
 
@@ -126,7 +129,7 @@ export class StaveComponent extends HTMLElement {
                     },
                     sequence: {
                         callback: (time, note) => {
-                            console.log(time, note);
+                            // console.log(time, note);
                             const bb = this.notes[this.note_ind].getBoundingBox();
                             this.pos_block.style.width = `${bb.width}px`;
                             this.pos_block.style.transform = `translateX(${bb.x}px)`
@@ -136,7 +139,10 @@ export class StaveComponent extends HTMLElement {
                         },
                         dur: "16n",
                     },
-                    
+                    stop_callback: () => {
+                        this.btn_play.textContent = "Play";
+                        this.is_playing = false;
+                    }
                 });
                 this.player.start();
             } else{

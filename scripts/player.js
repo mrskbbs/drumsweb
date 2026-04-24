@@ -1,4 +1,5 @@
 export class Player {
+    track;
     constructor(){
         /*
         Track syntax:
@@ -13,7 +14,7 @@ export class Player {
                 callback: (time, note) => void,
                 dur: 4n | 8n | 16n | etc.,
             },
-            
+            stop_callback: () => void,
         }
         */
         this.track = undefined; // active track 
@@ -42,7 +43,7 @@ export class Player {
 
     start(){
         if(this.track === undefined) {
-            console.warn("Can't play anything. Track is not selected");
+            // console.warn("Can't play anything. Track is not selected");
             return;
         }
         Tone.Transport.seconds = 0;
@@ -53,13 +54,14 @@ export class Player {
 
     stop(){
         if(this.track === undefined) {
-            console.warn("Can't play anything. Track is not selected");
+            // console.warn("Can't play anything. Track is not selected");
             return;
         }
         
         Tone.Transport.stop();
         this.metronome_loop.stop(0);
         this.sequence.stop(0);
+        this.track.stop_callback();
         Tone.Transport.position = 0;
     }
 
@@ -74,12 +76,12 @@ export class Player {
 
     changeTrack(new_track){
         if(new_track === undefined){
-            console.error("new_track property must be defined");
+            //console.error("new_track property must be defined");
             return;
         }
 
         if(new_track.id === this.track?.id){
-            console.info("Event is already active");
+            // console.info("Event is already active");
             return;
         }
 

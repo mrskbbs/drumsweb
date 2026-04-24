@@ -1,0 +1,15 @@
+#stave_canvas{
+    position: relative;
+}
+
+.pos_block{
+    opacity: .5;
+    position: absolute;
+    top: 0em;
+    background-color: blueviolet;
+    display: block;
+    height: 100%;
+    width: 1em;
+    transition-duration: 100ms;
+    transition: transform cubic-bezier(0.165, 0.84, 0.44, 1);
+}
