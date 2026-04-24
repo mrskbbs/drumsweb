@@ -9,7 +9,8 @@ const common_rythms_template = document.querySelector("#common_rythms_template")
 const common_rythms = new StaveComponent(
     "common_rythms",
     player,
-    common_rythms_module.generateNotes(common_rythms_module.patterns[11])
+    common_rythms_module.generateNotes(common_rythms_module.patterns[11]),
+    "16n",
 );
 common_rythms_template.replaceWith(common_rythms);
 
@@ -17,6 +18,7 @@ const common_rythms_template1 = document.querySelector("#common_rythms_template1
 const common_rythms1 = new StaveComponent(
     "common_rythms1",
     player,
-    common_rythms_module.generateNotes(common_rythms_module.patterns[3])
+    common_rythms_module.generateNotes(common_rythms_module.patterns[3]),
+    "16n",
 );
 common_rythms_template1.replaceWith(common_rythms1);

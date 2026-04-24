@@ -17,37 +17,8 @@ template.innerHTML =
 </div>
 `;
 
-// <style>
-// #stave_canvas{
-//     position: relative;
-// }
-//
-// .pos_block{
-//     opacity: .5;
-//     position: absolute;
-//     top: 0em;
-//     background-color: blueviolet;
-//     display: block;
-//     height: 100%;
-//     width: 1em;
-//     transition-duration: 100ms;
-//     transition: transform cubic-bezier(0.165, 0.84, 0.44, 1);
-// }
-// </style>
-// `;
-
 export class StaveComponent extends HTMLElement { 
-    shadow;
-    bpm = 0;
-    bpm_display;
-    bpm_input;
-    btn_play;
-    stave_canvas;
-    notes;
-    num_beats;
-    beat_value;
-
-    constructor(id, player, notes, num_beats = 4, beat_value = 4){
+    constructor(id, player, notes, measure, num_beats = 4, beat_value = 4){
         super();
         
         this.shadow = this.attachShadow({ mode: "open" });
@@ -58,25 +29,30 @@ export class StaveComponent extends HTMLElement {
         this.notes = notes;
         this.num_beats = num_beats;
         this.beat_value = beat_value;
+        this.measure = measure;
+
         this.note_ind = 0;
         this.is_playing = false;
     }
 
     connectedCallback(){
-        // select all of the elements
+        this.selectElements();
+        this.setupNotationRenderer();
+        this.setupBPMInput();
+        this.setupPlayButton();
+    }
+
+    selectElements(){
         this.bpm_input = this.shadow.querySelector("#bpm_input");
         this.bpm_display = this.shadow.querySelector("#bpm_display");
         this.btn_play= this.shadow.querySelector("#btn_play");
         this.stave_canvas = this.shadow.querySelector("#stave_canvas");
         this.pos_block = this.shadow.querySelector("#stave_canvas > .pos_block");
+    }
 
-        // bpm related setup
+    setupBPMInput(){
         this.bpm = Number(this.bpm_input.value);
         this.bpm_display.innerHTML = `${this.bpm}`;
-
-        this.pos_block.style.transitionDuration = `${
-            blockTransitionDuration(this.bpm, Number(this.bpm_input.min))
-        }ms`;
 
         this.bpm_input.addEventListener("input", (e) => {
             this.bpm = Number(e.currentTarget.value);
@@ -88,9 +64,30 @@ export class StaveComponent extends HTMLElement {
                 blockTransitionDuration(this.bpm, Number(this.bpm_input.min))
             }ms`;
         });
+    }
 
-        // stave rendering
-        const renderer = new Vex.Flow.Renderer(this.stave_canvas, Vex.Flow.Renderer.Backends.SVG);
+    setupPlayButton(){
+        this.btn_play.addEventListener("click", (e) => {
+            this.is_playing = !this.is_playing;
+            e.currentTarget.textContent = this.is_playing ? "Stop" : "Play";
+
+            if (this.is_playing){
+                this.note_ind = 0;
+
+                this.player.bpm = this.bpm;
+                this.player.changeTrack(this.track);
+                this.player.start();
+            } else{
+                this.player.stop();
+            }
+        });
+    }
+
+    setupNotationRenderer(){
+        const renderer = new Vex.Flow.Renderer(
+            this.stave_canvas,
+            Vex.Flow.Renderer.Backends.SVG
+        );
         renderer.resize(500, 150);
 
         const context = renderer.getContext();
@@ -105,8 +102,6 @@ export class StaveComponent extends HTMLElement {
             beatValue: this.beat_value,
         });
 
-        // console.log(this.notes);
-
         voice.addTickables(this.notes);
 
         new Vex.Flow.Formatter().joinVoices([voice]).format([voice], 400);
@@ -114,44 +109,40 @@ export class StaveComponent extends HTMLElement {
         voice.draw(context, stave);
         stave.setContext(context).draw();
 
-        // player logic itself
-        this.btn_play.addEventListener("click", (e) => {
-            this.is_playing = !this.is_playing;
-            e.currentTarget.textContent = this.is_playing ? "Stop" : "Play";
-            if (this.is_playing){
-                this.note_ind = 0;
-                this.player.bpm = this.bpm;
-                this.player.changeTrack({
-                    id: this.id, 
-                    notes: this.notes, // array of VexFlow note objects
-                    metronome: {
-                        dur: "4n",
-                    },
-                    sequence: {
-                        callback: (time, note) => {
-                            // console.log(time, note);
-                            const bb = this.notes[this.note_ind].getBoundingBox();
-                            this.pos_block.style.width = `${bb.width}px`;
-                            this.pos_block.style.transform = `translateX(${bb.x}px)`
-                            this.note_ind++;
-                            if(this.note_ind >= this.notes.length) 
-                                this.note_ind = 0;
-                        },
-                        dur: "16n",
-                    },
-                    stop_callback: () => {
-                        this.btn_play.textContent = "Play";
-                        this.is_playing = false;
-                    }
-                });
-                this.player.start();
-            } else{
-                this.player.stop();
-            }
-        });
+        this.pos_block.style.transitionDuration = `${
+            blockTransitionDuration(this.bpm, Number(this.bpm_input.min))
+        }ms`;
+        this.posBlockTransform(0);
     }
 
-    disconnectedCallback(){
+    posBlockTransform(ind){
+        const bb = this.notes[ind | this.note_ind].getBoundingBox();
+        this.pos_block.style.width = `${bb.width}px`;
+        this.pos_block.style.transform = `translateX(${bb.x}px)`;
+    }
+
+    get track(){
+        return {
+            id: this.id, 
+            notes: this.notes, // array of VexFlow note objects
+            metronome: {
+                measure: "4n",
+            },
+            sequence: {
+                callback: () => {
+                    this.posBlockTransform();
+
+                    this.note_ind++;
+                    if(this.note_ind >= this.notes.length) 
+                        this.note_ind = 0;
+                },
+                measure: this.measure,
+            },
+            stop_callback: () => {
+                this.btn_play.textContent = "Play";
+                this.is_playing = false;
+            },
+        };
     }
 }
 

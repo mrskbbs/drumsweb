@@ -8,11 +8,11 @@ export class Player {
             notes: array[], // array of VexFlow note objects
             metronome: {
                 callback: (time) => void,
-                dur:  4n | 8n | 16n | etc.,
+                measure:  4n | 8n | 16n | etc.,
             },
             sequence: {
                 callback: (time, note) => void,
-                dur: 4n | 8n | 16n | etc.,
+                measure: 4n | 8n | 16n | etc.,
             },
             stop_callback: () => void,
         }
@@ -43,7 +43,7 @@ export class Player {
 
     start(){
         if(this.track === undefined) {
-            // console.warn("Can't play anything. Track is not selected");
+            console.warn("Can't play anything. Track is not selected");
             return;
         }
         Tone.Transport.seconds = 0;
@@ -54,7 +54,7 @@ export class Player {
 
     stop(){
         if(this.track === undefined) {
-            // console.warn("Can't play anything. Track is not selected");
+            console.warn("Can't play anything. Track is not selected");
             return;
         }
         
@@ -76,12 +76,12 @@ export class Player {
 
     changeTrack(new_track){
         if(new_track === undefined){
-            //console.error("new_track property must be defined");
+            console.error("new_track property must be defined");
             return;
         }
 
         if(new_track.id === this.track?.id){
-            // console.info("Event is already active");
+            console.info("Event is already active");
             return;
         }
 
@@ -91,12 +91,12 @@ export class Player {
         this.metronome_loop = new Tone.Loop((time) => {
             this.track.metronome.callback?.(time);
             this.metronome.triggerAttackRelease("A5", "32n", time, 0.8);
-        }, this.track.metronome.dur);
+        }, this.track.metronome.measure);
 
         this.sequence = new Tone.Sequence(
             this.track.sequence.callback, 
             this.track.notes.map((v) => v.isRest() ? undefined : v.getKeys()[0]),
-            this.track.sequence.dur,
+            this.track.sequence.measure,
         );
         this.sequence.loop = true;
     }
