@@ -19,16 +19,14 @@ export class Player {
         */
         this.track = undefined; // active track 
 
-        this.metronome = new Tone.Synth(
-            {
-                oscillator: { type: "square" },
-                envelope: {
-                attack: 0.001,
-                decay: 0.02,
-                sustain: 0,
-                release: 0.01,
+        this.metronome = new Tone.Sampler({
+            urls: {
+                A5: "click.ogx" 
             },
-        }).toDestination();         
+            baseUrl: "/public/",
+        }).toDestination();
+
+        this.metronome.volume.value = -10;
 
         this.sequence = undefined;
     }
@@ -89,15 +87,21 @@ export class Player {
         this.track = new_track;
         
         this.metronome_loop = new Tone.Loop((time) => {
-            this.track.metronome.callback?.(time);
+            Tone.Draw.schedule(() => {
+                this.track.metronome.callback?.(time);
+            }, time);
             this.metronome.triggerAttackRelease("A5", "32n", time, 0.8);
         }, this.track.metronome.measure);
 
         this.sequence = new Tone.Sequence(
-            this.track.sequence.callback, 
+            (time) => {
+                Tone.Draw.schedule(() => this.track.sequence.callback(), time)
+            }, 
             this.track.notes.map((v) => v.isRest() ? undefined : v.getKeys()[0]),
             this.track.sequence.measure,
         );
         this.sequence.loop = true;
     }
 }
+
+export const player = new Player();
