@@ -9,3 +9,14 @@ export class ExerciseComponent {
         this.exercise = exercise;
     }
 }
+
+export class ExerciseWebcomponent extends HTMLElement{
+    // TODO: illegal constructor
+    constructor(exercise){
+        super();
+        if(new.target === ExerciseComponent)
+            throw new Error("Cannot instantiate abstract class directly");
+
+        this.exercise = exercise;
+    }
+}

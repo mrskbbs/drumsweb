@@ -1,3 +1,5 @@
+import { ExerciseWebcomponent } from "/scripts/core/exercise_component.js";
+
 const template = document.createElement("template");
 template.innerHTML =  
 `
@@ -7,16 +9,16 @@ template.innerHTML =
 </div>
 `;
 
-class StaveRendererWebcomponent extends HTMLElement {
+export class StaveRenderer extends ExerciseWebcomponent {
     stave_canvas;
     pos_block;
     #num_beats;
     #beat_value;
     #bpm;
-    #notes;
+    #note;
 
-    constructor(num_beats, beat_value, bpm, notes){
-        super();
+    constructor(exercise, num_beats, beat_value, bpm, note_ind){
+        super(exercise);
         
         this.shadow = this.attachShadow({ mode: "open" });
         this.shadow.append(template.content.cloneNode(true));
@@ -25,7 +27,7 @@ class StaveRendererWebcomponent extends HTMLElement {
         this.#num_beats = num_beats;
         this.#beat_value = beat_value;
         this.#bpm = bpm;
-        this.#notes = notes;
+        this.#note = this.exercise.notes[note_ind];
     }
 
     connectedCallback(){
@@ -35,8 +37,8 @@ class StaveRendererWebcomponent extends HTMLElement {
         this.#render();
     }
     
-    notesChange(notes){
-        this.#notes = notes;
+    notesChange(ind){
+        this.#note = this.exercise.notes[ind];
 
         this.#render();
     }
@@ -70,7 +72,7 @@ class StaveRendererWebcomponent extends HTMLElement {
             beatValue: this.#beat_value,
         });
 
-        voice.addTickables(this.#notes);
+        voice.addTickables(this.#note);
 
         new Vex.Flow.Formatter().joinVoices([voice]).format([voice], 400);
 
@@ -78,21 +80,6 @@ class StaveRendererWebcomponent extends HTMLElement {
         stave.setContext(context).draw();
 
         this.cursorSpeed(this.#bpm);
-        this.cursorMove(this.#notes[0].getBoundingBox());
-    }
-}
-
-class StaveRenderer extends ExerciseComponent {
-    webcomponent;
-    cursorMove;
-    cursorSpeed;
-    notesChange;
-
-    constructor(exercise){
-        super(exercise);
-        this.webcomponent = new StaveRendererWebcomponent();
-        this.cursorMove = this.webcomponent.cursorMove;
-        this.cursorSpeed = this.webcomponent.cursorSpeed;
-        this.notesChange = this.webcomponent.notesChange;
+        this.cursorMove(this.#note[0].getBoundingBox());
     }
 }
