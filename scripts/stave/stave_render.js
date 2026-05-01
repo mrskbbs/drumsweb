@@ -45,7 +45,6 @@ export class StaveRenderer extends ExerciseWebcomponent {
 
     cursorSpeed(bpm){
         const duration = ((60 / bpm) * 100) * 0.6;
-        // const duration = 100;
         this.pos_block.style.transitionDuration = `${duration}ms`;    
     }
 
@@ -55,6 +54,9 @@ export class StaveRenderer extends ExerciseWebcomponent {
     }
 
     #render(){
+        const old_stave = this.stave_canvas.querySelector("svg");
+        if(old_stave) this.stave_canvas.removeChild(old_stave);
+
         const renderer = new Vex.Flow.Renderer(
             this.stave_canvas,
             Vex.Flow.Renderer.Backends.SVG,

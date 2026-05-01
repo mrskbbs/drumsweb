@@ -1,6 +1,7 @@
 export class Player {
     subscribers;
-
+    active;
+    // TODO improve logic of syncing different exercises 
     constructor(){
         this.subscribers = new Set();
     }
@@ -9,7 +10,8 @@ export class Player {
         return Tone.Transport.bpm.value;
     }
 
-    set bpm(bpm){
+    setBPM(caller, bpm){
+        if (caller !== this.active) return;
         Tone.Transport.bpm.value = Number(bpm);
     }
 
@@ -20,10 +22,10 @@ export class Player {
         if(bpm !== undefined)
             Tone.Transport.bpm.value = Number(bpm);
 
-        this.subscribers.keys()
-            .map((s) => { 
-                if(s !== caller) s.notify(s.sound, "stop"); 
-            });
+        this.subscribers.forEach((s) => {
+            if(s !== caller) s.notify(s.controls, "stop"); 
+        });
+        this.active = caller;
 
         Tone.Transport.seconds = 0;
         Tone.start();
@@ -31,6 +33,7 @@ export class Player {
     }
 
     stop(){
+        this.active = undefined;
         Tone.Transport.stop();
         Tone.Transport.position = 0;
     }

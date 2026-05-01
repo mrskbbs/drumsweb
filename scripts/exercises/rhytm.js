@@ -31,7 +31,6 @@ class RhythmExercise extends Exercise {
     }
 
     notify(sender, event, value){
-        console.log(sender, event, value);
         switch(sender.constructor){
             case StaveRenderer:
                 this.rendererHandleEvent(event, value);
@@ -59,7 +58,7 @@ class RhythmExercise extends Exercise {
             case "bpm":
                 const bpm = Number(value);
                 this.renderer.cursorSpeed(bpm);
-                this.player.bpm = bpm;
+                this.player.setBPM(this, bpm);
                 break;
             case "play":
                 this.sound.play();
@@ -71,9 +70,9 @@ class RhythmExercise extends Exercise {
             // case "autoplay":
             //     this.exercise.sound.autoplay_on = Boolean(value);
             //     break;
-            // case "metronome_on":
-            //     this.exercise.sound.metronome_on = Boolean(value);
-            //     break;
+            case "metronome":
+                this.sound.metronome_on = Boolean(value);
+                break;
             case "pattern":
                 this.renderer.changeNotes(value);
                 this.sound.changeNotes(value);
@@ -96,6 +95,7 @@ class RhythmExercise extends Exercise {
                 break;
             case "stop":
                 this.player.stop(this);
+                this.controls.is_playing = false;
                 break;
             case "cursor_move":
                 this.renderer.cursorMove(value);

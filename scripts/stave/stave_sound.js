@@ -38,7 +38,6 @@ export class StaveSound extends ExerciseComponent{
                             "cursor_move", 
                             cur_note[this.sequence_ind].getBoundingBox()
                         );
-                        console.log(this.sequence_ind);
                         this.sequence_ind++;
 
                         if(this.sequence_ind >= cur_note.length)
@@ -58,7 +57,7 @@ export class StaveSound extends ExerciseComponent{
     stop(){
         this.exercise.notify(this, "stop");
 
-        this.sequence_player.stop(0);
+        this.sequence_player?.stop(0);
     }    
 
     changeNotes(ind){
@@ -74,14 +73,12 @@ export class StaveSound extends ExerciseComponent{
             throw new Error("Invalid note index");
 
         this.notes_ind = ind;
-
-        this.start();
     }    
 
     get metronome_on(){ return this.#metronome_on; }
     set metronome_on(value){
         this.#metronome_on = Boolean(value);
-        this.metronome_sound.volume.value = this.#metronome_on ? -10 : -Infinity;
+        this.metronome_sampler.volume.value = this.#metronome_on ? 0 : -Infinity;
     }
 }
 

@@ -21,7 +21,7 @@ template.innerHTML =
     -->
     <label>
         Metronome
-        <input id="metronome" type="checkbox" />
+        <input id="metronome" type="checkbox" checked />
     </label>
     <label>
         <span>BPM:<span id="bpm_value"></span></span>
@@ -94,7 +94,7 @@ export class StaveControls extends ExerciseWebcomponent{
         // });
 
         this.metronome.addEventListener("input", (e) => {
-            this.exercise.notify(this, "metronome", Boolean(e.currentTarget.value));
+            this.exercise.notify(this, "metronome", Boolean(e.currentTarget.checked));
         });
 
         this.bpm_input.addEventListener("input", (e) => {
@@ -110,6 +110,13 @@ export class StaveControls extends ExerciseWebcomponent{
 
     get bpm(){
         return Number(this.bpm_input.value);
+    }
+    
+    get is_playing() { return this.#is_playing; }
+    set is_playing(value){
+        this.#is_playing = Boolean(value);
+        this.btn_play.innerHTML = this.#is_playing ? "Stop" : "Play";
+        this.pattern.disabled = this.#is_playing;
     }
 }
 
