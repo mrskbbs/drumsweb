@@ -37,14 +37,15 @@ export class StaveRenderer extends ExerciseWebcomponent {
         this.#render();
     }
     
-    notesChange(ind){
+    changeNotes(ind){
         this.#note = this.exercise.notes[ind];
 
         this.#render();
     }
 
     cursorSpeed(bpm){
-        const duration = ((60 / bpm) * 1000) * 0.6;
+        const duration = ((60 / bpm) * 100) * 0.6;
+        // const duration = 100;
         this.pos_block.style.transitionDuration = `${duration}ms`;    
     }
 
@@ -64,7 +65,7 @@ export class StaveRenderer extends ExerciseWebcomponent {
 
         const stave = new Vex.Flow.Stave(10, 40, 500);
         stave.addClef("percussion").addTimeSignature(
-            `${this.num_beats}/${this.beat_value}`
+            `${this.#num_beats}/${this.#beat_value}`
         );
 
         const voice = new Vex.Flow.Voice({ 
@@ -83,3 +84,5 @@ export class StaveRenderer extends ExerciseWebcomponent {
         this.cursorMove(this.#note[0].getBoundingBox());
     }
 }
+
+window.customElements.define("stave-render", StaveRenderer);

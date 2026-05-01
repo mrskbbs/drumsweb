@@ -1,34 +1,8 @@
 export class Player {
-    track;
+    subscribers;
+
     constructor(){
-        /*
-        Track syntax:
-        {
-            id: string,
-            notes: array[], // array of VexFlow note objects
-            metronome: {
-                callback: (time) => void,
-                measure:  4n | 8n | 16n | etc.,
-            },
-            sequence: {
-                callback: (time, note) => void,
-                measure: 4n | 8n | 16n | etc.,
-            },
-            stop_callback: () => void,
-        }
-        */
-        this.track = undefined; // active track 
-
-        this.metronome = new Tone.Sampler({
-            urls: {
-                A5: "click.ogx" 
-            },
-            baseUrl: "/public/",
-        }).toDestination();
-
-        this.metronome.volume.value = -10;
-
-        this.sequence = undefined;
+        this.subscribers = new Set();
     }
 
     get bpm(){
@@ -39,68 +13,34 @@ export class Player {
         Tone.Transport.bpm.value = Number(bpm);
     }
 
-    start(){
-        if(this.track === undefined) {
-            console.warn("Can't play anything. Track is not selected");
-            return;
-        }
+    play(caller, bpm){
+        if(!this.subscribers.has(caller))
+            throw new Error("Caller is not present in subscribers");
+        
+        if(bpm !== undefined)
+            Tone.Transport.bpm.value = Number(bpm);
+
+        this.subscribers.keys()
+            .map((s) => { 
+                if(s !== caller) s.notify(s.sound, "stop"); 
+            });
+
         Tone.Transport.seconds = 0;
+        Tone.start();
         Tone.Transport.start();
-        this.metronome_loop.start(0);
-        this.sequence.start(0, 0);
     }
 
     stop(){
-        if(this.track === undefined) {
-            console.warn("Can't play anything. Track is not selected");
-            return;
-        }
-        
         Tone.Transport.stop();
-        this.metronome_loop.stop(0);
-        this.sequence.stop(0);
-        this.track.stop_callback();
         Tone.Transport.position = 0;
     }
 
-    clearTrack(){
-        this.stop();
-
-        this.track = undefined;
-        this.metronome_loop = undefined;
-        this.sequence = undefined;
-        this.sequence_loop = undefined;
+    subscribe(subscriber){
+        this.subscribers.add(subscriber);
     }
 
-    changeTrack(new_track){
-        if(new_track === undefined){
-            console.error("new_track property must be defined");
-            return;
-        }
-
-        if(new_track.id === this.track?.id){
-            console.info("Event is already active");
-            return;
-        }
-
-        this.clearTrack();
-        this.track = new_track;
-        
-        this.metronome_loop = new Tone.Loop((time) => {
-            Tone.Draw.schedule(() => {
-                this.track.metronome.callback?.(time);
-            }, time);
-            this.metronome.triggerAttackRelease("A5", "32n", time, 0.8);
-        }, this.track.metronome.measure);
-
-        this.sequence = new Tone.Sequence(
-            (time) => {
-                Tone.Draw.schedule(() => this.track.sequence.callback(), time)
-            }, 
-            this.track.notes.map((v) => v.isRest() ? undefined : v.getKeys()[0]),
-            this.track.sequence.measure,
-        );
-        this.sequence.loop = true;
+    unsubscribe(subscriber){
+        this.subscribers.delete(subscriber);
     }
 }
 

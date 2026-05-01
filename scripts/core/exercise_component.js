@@ -11,7 +11,6 @@ export class ExerciseComponent {
 }
 
 export class ExerciseWebcomponent extends HTMLElement{
-    // TODO: illegal constructor
     constructor(exercise){
         super();
         if(new.target === ExerciseComponent)

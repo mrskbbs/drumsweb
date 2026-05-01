@@ -24,14 +24,14 @@ class RhythmExercise extends Exercise {
     notes = [];
     patterns = [];
 
-    constructor(){
+    constructor(player){
         super();
-        // this.player = player;
-        //
-        // this.player.subscribe(this);
+        this.player = player;
+        this.player.subscribe(this);
     }
 
     notify(sender, event, value){
+        console.log(sender, event, value);
         switch(sender.constructor){
             case StaveRenderer:
                 this.rendererHandleEvent(event, value);
@@ -57,18 +57,15 @@ class RhythmExercise extends Exercise {
     controlsHandleEvent(event, value){
         switch(event){
             case "bpm":
-                const bpm = Number(bpm);
-                this.exercise.renderer.cursorSpeed(bpm);
-                this.sound.rescheduleNextTrack();
-                this.player.notify(this, "bpm", bpm)
+                const bpm = Number(value);
+                this.renderer.cursorSpeed(bpm);
+                this.player.bpm = bpm;
                 break;
             case "play":
-                this.exercise.sound.play();
-                this.player.notify(this, "play");
+                this.sound.play();
                 break;
             case "stop":
-                this.exercise.sound.stop();
-                this.player.notify(this, "stop");
+                this.sound.stop();
                 break;
             // TODO: after mvp add this functionality
             // case "autoplay":
@@ -77,9 +74,9 @@ class RhythmExercise extends Exercise {
             // case "metronome_on":
             //     this.exercise.sound.metronome_on = Boolean(value);
             //     break;
-            case "change_notes":
-                this.exercise.renderer.changeNotes(value);
-                this.exercise.sound.changeNotes(value);
+            case "pattern":
+                this.renderer.changeNotes(value);
+                this.sound.changeNotes(value);
                 break;
             // case "countdown":
             //     this.exercise.sound.countdown_on = Boolean(value);
@@ -94,8 +91,14 @@ class RhythmExercise extends Exercise {
 
     soundHandleEvent(event, value){
         switch(event){
+            case "play":
+                this.player.play(this, this.controls.bpm);
+                break;
+            case "stop":
+                this.player.stop(this);
+                break;
             case "cursor_move":
-                this.exercise.renderer.cursorMove(value);
+                this.renderer.cursorMove(value);
                 break;
             default:
                 throw new Error("Invalid event for sound");
@@ -174,16 +177,17 @@ template.innerHTML =
 </div>
 `;
 
-class RhythmExerciseWebcomponent extends HTMLElement{
+export class RhythmExerciseWebcomponent extends HTMLElement{
     exercise;
 
-    constructor(){
+    constructor(player){
         super();
 
         this.shadow = this.attachShadow({ mode: "open" });
         this.shadow.append(template.content.cloneNode(true));
 
-        this.exercise = new RhythmExercise();
+        this.exercise = new RhythmExercise(player); 
+        this.exercise.generatePatternsAndNotes();
     }
 
     connectedCallback(){
@@ -194,7 +198,7 @@ class RhythmExerciseWebcomponent extends HTMLElement{
             Tone.Transport.bpm.value,
             0,
         );
-        this.exercise.sound = new StaveSound(this.exercise, 16);
+        this.exercise.sound = new StaveSound(this.exercise, 16, 4);
         this.exercise.controls = new StaveControls(
             this.exercise,
             //TODO: there is gotta be a better way, but im too tired to think on how to improve it 
@@ -218,6 +222,5 @@ class RhythmExerciseWebcomponent extends HTMLElement{
             .replaceWith(this.exercise.controls);
     }
 }
+
 customElements.define("rhythm-exercise", RhythmExerciseWebcomponent);
-
-
