@@ -71,6 +71,7 @@ class RhythmExercise extends Exercise {
             //     this.exercise.sound.autoplay_on = Boolean(value);
             //     break;
             case "metronome":
+                console.log(event, value);
                 this.sound.metronome_on = Boolean(value);
                 break;
             case "pattern":

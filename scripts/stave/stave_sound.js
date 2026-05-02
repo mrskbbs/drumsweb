@@ -17,13 +17,12 @@ export class StaveSound extends ExerciseComponent{
             urls: {
                 A5: "click.ogx" 
             },
-            baseUrl: "/public/",
+            baseUrl: "/public/metronome/",
         }).toDestination();
 
         this.metronome_player = new Tone.Loop((time) => {
             this.metronome_sampler.triggerAttackRelease("A5", "32n", time, 0.05);
         }, "4n");
-        this.metronome_player.start(0);
     }
 
     play(){
@@ -52,12 +51,14 @@ export class StaveSound extends ExerciseComponent{
 
         this.exercise.notify(this, "play");
         this.sequence_player.start(0, 0);
+        this.metronome_player.start(0);
     }
 
     stop(){
         this.exercise.notify(this, "stop");
 
-        this.sequence_player?.stop(0);
+        this.sequence_player?.stop();
+        this.metronome_player.stop();
     }    
 
     changeNotes(ind){
