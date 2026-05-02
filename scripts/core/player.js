@@ -1,8 +1,11 @@
 export class Player {
     subscribers;
     active;
+    metronome_volume_input;
+    drums_volume_input;
+
     // TODO improve logic of syncing different exercises 
-    constructor(){
+    constructor(metronome_volume_input, drums_volume_input){
         this.subscribers = new Set();
     }
 
@@ -40,6 +43,16 @@ export class Player {
 
     subscribe(subscriber){
         this.subscribers.add(subscriber);
+        // subscriber.notify(
+        //     this,
+        //     "drums_volume", 
+        //     Number(this.drums_volume_input.value),
+        // );
+        // subscriber.notify(
+        //     this,
+        //     "metronome_volume", 
+        //     Number(this.metronome_volume_input.value),
+        // );
     }
 
     unsubscribe(subscriber){

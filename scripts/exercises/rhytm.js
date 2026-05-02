@@ -10,7 +10,7 @@
 //         this.exercise = new ExerciseClass();
 //     }
 // }
-
+import { Player } from "../core/player.js";
 import { Exercise } from "/scripts/core/exercise.js";
 import { StaveRenderer } from "/scripts/stave/stave_render.js";
 import { StaveControls } from "/scripts/stave/stave_controls.js";
@@ -71,8 +71,10 @@ class RhythmExercise extends Exercise {
             //     this.exercise.sound.autoplay_on = Boolean(value);
             //     break;
             case "metronome":
-                console.log(event, value);
-                this.sound.metronome_on = Boolean(value);
+                this.sound.metronome_volume = Number(value);
+                break;
+            case "drums":
+                this.sound.drums_volume = Number(value);
                 break;
             case "pattern":
                 this.renderer.changeNotes(value);

@@ -20,9 +20,14 @@ template.innerHTML =
         </label>
     -->
     <label>
-        Metronome
-        <input id="metronome" type="checkbox" checked />
+        Drums volume
+        <input id="drums_volume" type="range" min="0" max="100" />
     </label>
+    <label>
+        Metronome volume
+        <input id="metronome_volume" type="range" min="0" max="100" />
+    </label>
+
     <label>
         <span>BPM:<span id="bpm_value"></span></span>
         <input id="bpm_input" type="range" min="30" max="250"/>
@@ -53,8 +58,14 @@ export class StaveControls extends ExerciseWebcomponent{
         // this.countdown = this.shadow.querySelector("#countdown");
         // this.autoplay = this.shadow.querySelector("#autoplay");
         this.metronome = this.shadow.querySelector("#metronome");
+        this.drums = this.shadow.querySelector("#drums");
         this.bpm_value = this.shadow.querySelector("#bpm_value");
         this.bpm_input = this.shadow.querySelector("#bpm_input");
+
+        this.metronome_volume_input = this.shadow.querySelector("#metronome_volume");
+        this.drums_volume_input = this.shadow.querySelector("#drums_volume");
+
+        
         this.bpm_value.innerHTML = this.bpm_input.value;
 
         this.pattern = this.shadow.querySelector("#pattern");
@@ -78,6 +89,22 @@ export class StaveControls extends ExerciseWebcomponent{
             this.exercise.notify(this, this.#is_playing ? "play" : "stop", this.#is_playing);
         });
 
+        this.metronome_volume_input.addEventListener("change", (e) => {
+            this.exercise.notify(
+                this,
+                "metronome", 
+                Number(e.currentTarget.value),
+            );
+        });
+
+        this.drums_volume_input.addEventListener("change", (e) => {
+            this.exercise.notify(
+                this,
+                "drums", 
+                Number(e.currentTarget.value),
+            );
+        });
+
         //TODO: impl after mvp
         // this.loop_count.addEventListener("onchange", (e) => {
         //     this.exercise.notify(this, "loop_count", Number(e.currentTarget.value));
@@ -92,10 +119,6 @@ export class StaveControls extends ExerciseWebcomponent{
         //     this.loop_count.disabled = true;
         //     this.pattern.disabled = true;
         // });
-
-        this.metronome.addEventListener("input", (e) => {
-            this.exercise.notify(this, "metronome", Boolean(e.currentTarget.checked));
-        });
 
         this.bpm_input.addEventListener("input", (e) => {
             const bpm = Number(e.currentTarget.value);

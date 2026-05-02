@@ -1,7 +1,9 @@
 import { ExerciseComponent } from "/scripts/core/exercise_component.js";
+import { vexFlowToMidi } from "../utils.js";
 
 export class StaveSound extends ExerciseComponent{
-    #metronome_on = true;
+    #metronome_volume = 0;
+    #drums_volume = 0;
 
     constructor(exercise, sequence_measure, metronome_measure){
         super(exercise);
@@ -11,25 +13,49 @@ export class StaveSound extends ExerciseComponent{
         this.sequence_player = undefined;
         this.sequence_measure = sequence_measure;
         this.sequence_ind = 0;
+
         this.metronome_measure = metronome_measure;
+        this.metronome_ind= 0;
 
         this.metronome_sampler = new Tone.Sampler({
             urls: {
-                A5: "click.ogx" 
+                A5: "click.ogx", 
+                A6: "clickAccent.ogx",
             },
             baseUrl: "/public/metronome/",
         }).toDestination();
 
+        this.drums_sampler = new Tone.Sampler({
+            urls: {
+                "C1": "kick.mp3",
+                "D1": "snare.mp3",
+                "G1": "tom3.mp3",
+                "B1": "tom2.mp3",
+                "D2": "tom1.mp3",
+                "F#1": "hihat.mp3",
+            },
+            baseUrl: "/public/drum/",
+        }).toDestination();
+
         this.metronome_player = new Tone.Loop((time) => {
-            this.metronome_sampler.triggerAttackRelease("A5", "32n", time, 0.05);
-        }, "4n");
+            this.metronome_sampler.triggerAttackRelease(
+                this.metronome_ind === 0 ? "A6" : "A5", 
+                "32n", 
+                time, 
+                0.1
+            );
+            this.metronome_ind = (this.metronome_ind + 1) % 4;
+        }, `${this.metronome_measure}n`);
     }
 
     play(){
         const cur_note = this.exercise.notes[this.notes_ind];
         this.sequence_ind = 0;
+        this.metronome_ind = 0;
         this.sequence_player = new Tone.Sequence(
-            (time) => {
+            (time, note) => {
+                if(note !== undefined)
+                    this.drums_sampler.triggerAttackRelease(vexFlowToMidi[note], "16n", time, 0.05);
                 Tone.Draw.schedule(
                     () =>  {
                         this.exercise.notify(
@@ -45,7 +71,7 @@ export class StaveSound extends ExerciseComponent{
                 , time);
             }, 
             cur_note.map((v) => v.isRest() ? undefined : v.getKeys()[0]),
-            "16n",
+            `${this.sequence_measure}n`,
         );
         this.sequence_player.loop = true;
 
@@ -76,10 +102,14 @@ export class StaveSound extends ExerciseComponent{
         this.notes_ind = ind;
     }    
 
-    get metronome_on(){ return this.#metronome_on; }
-    set metronome_on(value){
-        this.#metronome_on = Boolean(value);
-        this.metronome_sampler.volume.value = this.#metronome_on ? 0 : -Infinity;
+    get metronome_volume() { return this.#metronome_volume; }
+    set metronome_volume(value){
+        this.metronome_sampler.volume.value = Tone.gainToDb(Number(value)/100);
+    }
+
+    get drums_volume() { return this.#drums_volume; }
+    set drums_volume(value){
+        this.drums_sampler.volume.value = Tone.gainToDb(Number(value)/100);
     }
 }
 
