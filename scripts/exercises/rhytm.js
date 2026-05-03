@@ -10,7 +10,6 @@
 //         this.exercise = new ExerciseClass();
 //     }
 // }
-import { Player } from "../core/player.js";
 import { Exercise } from "/scripts/core/exercise.js";
 import { StaveRenderer } from "/scripts/stave/stave_render.js";
 import { StaveControls } from "/scripts/stave/stave_controls.js";
@@ -66,10 +65,12 @@ class RhythmExercise extends Exercise {
             case "stop":
                 this.sound.stop();
                 break;
-            // TODO: after mvp add this functionality
-            // case "autoplay":
-            //     this.exercise.sound.autoplay_on = Boolean(value);
-            //     break;
+            case "loop_count":
+                this.sound.loop_count = Number(value);
+                break;
+            case "autoplay":
+                this.sound.autoplay_on = Boolean(value);
+                break;
             case "metronome":
                 this.sound.metronome_volume = Number(value);
                 break;
@@ -80,12 +81,6 @@ class RhythmExercise extends Exercise {
                 this.renderer.changeNotes(value);
                 this.sound.changeNotes(value);
                 break;
-            // case "countdown":
-            //     this.exercise.sound.countdown_on = Boolean(value);
-            //     break;
-            // case "loop_count":
-            //     this.exercise.sound.loop_count = Number(value);
-            //     break;
             default:
                 throw new Error("Invalid event for controls");
         }
@@ -95,6 +90,7 @@ class RhythmExercise extends Exercise {
         switch(event){
             case "play":
                 this.player.play(this, this.controls.bpm);
+                this.controls.is_playing = true;
                 break;
             case "stop":
                 this.player.stop(this);
@@ -102,6 +98,10 @@ class RhythmExercise extends Exercise {
                 break;
             case "cursor_move":
                 this.renderer.cursorMove(value);
+                break;
+            case "next_note":
+                this.controls.note_ind = Number(value);
+                this.renderer.changeNotes(value);
                 break;
             default:
                 throw new Error("Invalid event for sound");

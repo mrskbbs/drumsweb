@@ -5,20 +5,14 @@ template.innerHTML =
 `
 <div>
     <button type="button" id="btn_play">Play</button>
-    <!--
-        <label>
-            Number of pattern loops
-            <input id="loop_count" type="number" />
-        </label>
-        <label>
-            Countdown
-            <input id="countdown" type="number" />
-        </label>
-        <label>
-            Autoplay
-            <input id="autoplay" type="checkbox" />
-        </label>
-    -->
+    <label>
+        Autoplay
+        <input id="autoplay" type="checkbox" />
+    </label>
+    <label>
+        Number of loops
+        <input id="loop_count" type="number" value="2" />
+    </label>
     <label>
         Drums volume
         <input id="drums_volume" type="range" min="0" max="100" />
@@ -53,10 +47,8 @@ export class StaveControls extends ExerciseWebcomponent{
 
     connectedCallback(){
         this.btn_play = this.shadow.querySelector("#btn_play");
-        //TODO: impl after mvp
-        // this.loop_count = this.shadow.querySelector("#loop_count");
-        // this.countdown = this.shadow.querySelector("#countdown");
-        // this.autoplay = this.shadow.querySelector("#autoplay");
+        this.loop_count = this.shadow.querySelector("#loop_count");
+        this.autoplay = this.shadow.querySelector("#autoplay");
         this.metronome = this.shadow.querySelector("#metronome");
         this.drums = this.shadow.querySelector("#drums");
         this.bpm_value = this.shadow.querySelector("#bpm_value");
@@ -65,7 +57,6 @@ export class StaveControls extends ExerciseWebcomponent{
         this.metronome_volume_input = this.shadow.querySelector("#metronome_volume");
         this.drums_volume_input = this.shadow.querySelector("#drums_volume");
 
-        
         this.bpm_value.innerHTML = this.bpm_input.value;
 
         this.pattern = this.shadow.querySelector("#pattern");
@@ -76,16 +67,8 @@ export class StaveControls extends ExerciseWebcomponent{
             this.pattern.add(opt, null);
         });
 
-        this.btn_play.addEventListener("click", (e) => {
+        this.btn_play.addEventListener("click", () => {
             this.#is_playing = !this.#is_playing;
-            e.currentTarget.innerHTML = this.#is_playing ? "Stop" : "Play"; 
-            
-            //TODO: impl after mvp
-            // this.loop_count.disabled = this.#is_playing || Boolean(this.loop_count.value);
-            // this.countdown.disabled = this.#is_playing;
-            // this.autoplay.disabled = this.#is_playing;
-            this.pattern.disabled = this.#is_playing; // || Boolean(this.loop_count.value);
-
             this.exercise.notify(this, this.#is_playing ? "play" : "stop", this.#is_playing);
         });
 
@@ -105,20 +88,14 @@ export class StaveControls extends ExerciseWebcomponent{
             );
         });
 
-        //TODO: impl after mvp
-        // this.loop_count.addEventListener("onchange", (e) => {
-        //     this.exercise.notify(this, "loop_count", Number(e.currentTarget.value));
-        // });
-        //
-        // this.countdown.addEventListener("onchange", (e) => {
-        //     this.exercise.notify(this, "countdown", Boolean(e.currentTarget.value));
-        // });
-        //
-        // this.autoplay.addEventListener("onchange", (e) => {
-        //     this.exercise.notify(this, "autoplay", Boolean(e.currentTarget.value));
-        //     this.loop_count.disabled = true;
-        //     this.pattern.disabled = true;
-        // });
+        this.loop_count.addEventListener("change", (e) => {
+            this.exercise.notify(this, "loop_count", Number(e.currentTarget.value));
+        });
+
+        this.autoplay.addEventListener("change", (e) => {
+            this.exercise.notify(this, "stop");
+            this.exercise.notify(this, "autoplay", Boolean(e.currentTarget.checked));
+        });
 
         this.bpm_input.addEventListener("input", (e) => {
             const bpm = Number(e.currentTarget.value);
@@ -138,8 +115,15 @@ export class StaveControls extends ExerciseWebcomponent{
     get is_playing() { return this.#is_playing; }
     set is_playing(value){
         this.#is_playing = Boolean(value);
-        this.btn_play.innerHTML = this.#is_playing ? "Stop" : "Play";
+        this.btn_play.innerHTML = this.#is_playing ? "Stop" : "Play"; 
         this.pattern.disabled = this.#is_playing;
+        this.autoplay.disabled = this.#is_playing;
+        this.loop_count.disabled = this.#is_playing;
+    }
+
+    get note_ind() { return Number(this.pattern.value); }
+    set note_ind(value){
+        this.pattern.value = Number(value);
     }
 }
 

@@ -5,7 +5,7 @@ export class Player {
     drums_volume_input;
 
     // TODO improve logic of syncing different exercises 
-    constructor(metronome_volume_input, drums_volume_input){
+    constructor(){
         this.subscribers = new Set();
     }
 
@@ -28,6 +28,7 @@ export class Player {
         this.subscribers.forEach((s) => {
             if(s !== caller) s.notify(s.controls, "stop"); 
         });
+
         this.active = caller;
 
         Tone.Transport.seconds = 0;
@@ -37,6 +38,7 @@ export class Player {
 
     stop(){
         this.active = undefined;
+
         Tone.Transport.stop();
         Tone.Transport.position = 0;
     }
