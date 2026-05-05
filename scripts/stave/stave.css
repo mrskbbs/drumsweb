@@ -1,15 +1,19 @@
 #stave_canvas{
     position: relative;
+    background-color: white;
+    isolation: isolate;
 }
 
 .pos_block{
-    opacity: .5;
+    z-index: 255 !important;
     position: absolute;
     top: 0em;
-    background-color: blueviolet;
     display: block;
     height: 100%;
-    width: 1em;
+    width: 1.5em;
     transition-duration: 100ms;
     transition: transform cubic-bezier(0.165, 0.84, 0.44, 1);
+    /* border: .1em solid black; */
+    background-color: white;
+    mix-blend-mode: difference;
 }

@@ -20,8 +20,10 @@ export class StaveRenderer extends ExerciseWebcomponent {
     constructor(exercise, num_beats, beat_value, bpm, note_ind){
         super(exercise);
         
-        this.shadow = this.attachShadow({ mode: "open" });
-        this.shadow.append(template.content.cloneNode(true));
+        // this.shadow = this.attachShadow({ mode: "open" });
+        // this.shadow.append(template.content.cloneNode(true));
+        
+        this.innerHTML = template.innerHTML;
         
         // Init info for renderer
         this.#num_beats = num_beats;
@@ -31,8 +33,11 @@ export class StaveRenderer extends ExerciseWebcomponent {
     }
 
     connectedCallback(){
-        this.stave_canvas = this.shadow.querySelector("#stave_canvas");
-        this.pos_block = this.shadow.querySelector("#stave_canvas > .pos_block");
+        // this.stave_canvas = this.shadow.querySelector("#stave_canvas");
+        // this.pos_block = this.shadow.querySelector("#stave_canvas > .pos_block");
+
+        this.stave_canvas = this.querySelector("#stave_canvas");
+        this.pos_block = this.querySelector("#stave_canvas > .pos_block");
 
         this.#render();
     }
@@ -49,7 +54,7 @@ export class StaveRenderer extends ExerciseWebcomponent {
     }
 
     cursorMove(bb){
-        this.pos_block.style.width = `${bb.width}px`;
+        this.pos_block.style.width = `${bb.width+50}px`;
         this.pos_block.style.transform = `translateX(${bb.x}px)`;
     }
 
@@ -61,7 +66,7 @@ export class StaveRenderer extends ExerciseWebcomponent {
             this.stave_canvas,
             Vex.Flow.Renderer.Backends.SVG,
         );
-        renderer.resize(500, 150);
+        renderer.resize(1000, 250);
 
         const context = renderer.getContext();
 
@@ -79,11 +84,12 @@ export class StaveRenderer extends ExerciseWebcomponent {
 
         new Vex.Flow.Formatter().joinVoices([voice]).format([voice], 400);
 
+        context.scale(1.5, 1.5);
         voice.draw(context, stave);
         stave.setContext(context).draw();
 
         this.cursorSpeed(this.#bpm);
-        this.cursorMove(this.#note[0].getBoundingBox());
+        this.cursorMove({ x: this.#note[0].getAbsoluteX() });
     }
 }
 

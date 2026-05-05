@@ -10,3 +10,20 @@ export const vexFlowToMidi = {
     "e/5": "D2",
     "g/5": "F#1",
 }
+
+const updateSliderProgress = (slider) => {
+    slider.style.setProperty('--progress', `${((slider.value - slider.min) / (slider.max - slider.min)) * 100}%`);
+};
+
+export function slidersProgressFix(){
+    const allSliders = document.querySelectorAll('input[type="range"]');
+
+    allSliders.forEach((slider) => {
+        updateSliderProgress(slider);
+
+        slider.addEventListener('input', () => {
+            updateSliderProgress(slider);
+        });
+    });
+}
+

@@ -1,4 +1,138 @@
+@font-face {
+    font-family: "Inrina Serif";
+    font-weight: normal;
+    src: url("/public/fonts/Inria_Serif/InriaSerif-Regular.ttf");
+}
+@font-face {
+    font-family: "Inrina Serif";
+    font-weight: lighter;
+    src: url("/public/fonts/Inria_Serif/InriaSerif-Light.ttf");
+}
+@font-face {
+    font-family: "Inrina Serif";
+    font-weight: bold;
+    src: url("/public/fonts/Inria_Serif/InriaSerif-Bold.ttf");
+}
+
+@font-face {
+    font-family: "Playfair Display";
+    src: url("/public/fonts/Playfair_Display/PlayfairDisplay-VariableFont_wght.ttf");
+}
+
 label{
     display: flex;
     flex-direction: column;
+}
+
+:root{
+    font-family: "Inrina Serif";
+    font-weight: bold;
+    font-size: 1em;
+}
+
+hr{
+    border: none;
+    background-color: black;
+    height: .05em;
+}
+
+h1, h2, h3, h4{
+    margin: 0em;
+    font-family: "Playfair Display";
+    font-weight: 600;
+}
+
+details, summary{
+    border-bottom: .1em solid black;
+}
+details {
+    padding-bottom: .2em;
+}
+summary{
+    padding: 0em !important;
+    display: flex;
+    flex-direction: row;
+    user-select: none;
+    cursor: pointer;
+}
+summary::before{
+    content: "+";
+    height: 100%;
+    width: 1em;
+    font-size: 2.5em;
+    display: block;
+    text-align: center;
+    text-justify: center;
+}
+details:open > summary::before{
+    content: "-";
+}
+details > * > div{
+    padding-top: 2em;
+    padding-bottom: 2em;
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+}
+button{
+    cursor: pointer;
+    font-family: "Inrina Serif";
+    font-weight: 600;
+    border-radius: none;
+    background: none;
+}
+input, select{
+    font-family: "Inrina Serif";
+    font-weight: 600;
+    border: none;
+    background: white;
+}
+
+input:focus, select:focus{
+    outline: none;
+}
+
+input[type=range]{
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+}
+input[type=range]::-webkit-slider-runnable-track,
+input[type=range]::-moz-range-track {
+    background: linear-gradient(90deg, black var(--progress), white 0%);
+    border: .1em solid black;
+    border-radius: .25em;
+    height: 30%;
+}
+input[type=range]::-webkit-slider-thumb,
+input[type=range]::-moz-range-thumb{
+    background: black;
+    border: none;
+}
+select, input[type=number],button{
+    border: .1em solid black;
+    padding: .5em;
+}
+input:disabled, select:disabled{
+    color: lightgrey;
+    border-color: lightgrey;
+    accent-color: lightgrey;
+}
+input[type=checkbox]{
+    accent-color: black;
+}
+stave-controls{
+    display: grid;
+    gap: 2em;
+    grid-template:
+        "bpm auto drum      pattern"
+        "btn loop metronome pattern"
+    ;
+}
+#title{
+    width: 100%;
+    text-align: center;
+    margin-top: .5em;
+    margin-bottom: .5em;
 }

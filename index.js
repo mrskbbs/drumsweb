@@ -1,3 +1,4 @@
+import { slidersProgressFix } from "./scripts/utils.js";
 import { Player } from "/scripts/core/player.js";
 import { RhythmExerciseWebcomponent } from "/scripts/exercises/rhytm.js";
 
@@ -12,3 +13,5 @@ const rhythms1 = new RhythmExerciseWebcomponent(player);
 rhythms_template1.replaceWith(rhythms1);
 
 Tone.start();
+
+slidersProgressFix();

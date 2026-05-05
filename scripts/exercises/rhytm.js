@@ -172,11 +172,8 @@ const template = document.createElement("template");
 template.innerHTML = 
 `
 <div>
-    <div>
-        Controls
-        <template id="controls_tmpl"></template>
-    </div>
     <template id="renderer_tmpl"></template>
+    <template id="controls_tmpl"></template>
 </div>
 `;
 
@@ -186,8 +183,10 @@ export class RhythmExerciseWebcomponent extends HTMLElement{
     constructor(player){
         super();
 
-        this.shadow = this.attachShadow({ mode: "open" });
-        this.shadow.append(template.content.cloneNode(true));
+        // this.shadow = this.attachShadow({ mode: "open" });
+        // this.shadow.append(template.content.cloneNode(true));
+
+        this.innerHTML = template.innerHTML; 
 
         this.exercise = new RhythmExercise(player); 
         this.exercise.generatePatternsAndNotes();
@@ -219,9 +218,11 @@ export class RhythmExerciseWebcomponent extends HTMLElement{
             })
         );
 
-        this.shadow.querySelector("#renderer_tmpl")
+        // this.shadow.querySelector("#renderer_tmpl")
+        this.querySelector("#renderer_tmpl")
             .replaceWith(this.exercise.renderer);
-        this.shadow.querySelector("#controls_tmpl")
+        // this.shadow.querySelector("#controls_tmpl")
+        this.querySelector("#controls_tmpl")
             .replaceWith(this.exercise.controls);
     }
 }
