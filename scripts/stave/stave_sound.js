@@ -63,7 +63,7 @@ export class StaveSound extends ExerciseComponent{
                         this.exercise.notify(
                             this, 
                             "cursor_move", 
-                            cur_note[this.sequence_ind].getBoundingBox()
+                            { x: 1.5 * cur_note[this.sequence_ind].getAbsoluteX() }
                         );
                         this.sequence_ind++;
 

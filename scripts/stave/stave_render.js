@@ -89,7 +89,7 @@ export class StaveRenderer extends ExerciseWebcomponent {
         stave.setContext(context).draw();
 
         this.cursorSpeed(this.#bpm);
-        this.cursorMove({ x: this.#note[0].getAbsoluteX() });
+        this.cursorMove({ x: this.#note[0].getAbsoluteX() * 1.5 });
     }
 }
 

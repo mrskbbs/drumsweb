@@ -30,6 +30,11 @@ label{
     font-size: 1em;
 }
 
+::selection {
+    color: white;
+    background: black;
+}
+
 hr{
     border: none;
     background-color: black;
