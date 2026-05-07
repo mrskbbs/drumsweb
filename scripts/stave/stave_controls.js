@@ -8,7 +8,7 @@ template.innerHTML =
     <input id="bpm_input" type="range" min="30" max="250"/>
 </label>
 <button style="grid-area: btn" type="button" id="btn_play">Play</button>
-<label style="grid-area: auto">
+<label class="horiz" style="grid-area: auto">
     Autoplay
     <input id="autoplay" type="checkbox" />
 </label>
@@ -17,11 +17,11 @@ template.innerHTML =
     <input id="loop_count" type="number" value="2" />
 </label>
 <label style="grid-area: drum">
-    Drums volume
+    <span>Drums volume &mdash; <span id="drums_value"></span></span>
     <input id="drums_volume" type="range" min="0" max="100" />
 </label>
 <label style="grid-area: metronome">
-    Metronome volume
+    <span>Metronome volume &mdash; <span id="metronome_value"></span></span>
     <input id="metronome_volume" type="range" min="0" max="100" />
 </label>
 <label style="grid-area: pattern">
@@ -36,26 +36,12 @@ export class StaveControls extends ExerciseWebcomponent{
     constructor(exercise, options){
         super(exercise);
 
-        // this.shadow = this.attachShadow({ mode: "open" });
-        // this.shadow.append(template.content.cloneNode(true));
-
         this.innerHTML = template.innerHTML;
 
         this.pattern_options = options;
     }
 
     connectedCallback(){
-        // this.btn_play = this.shadow.querySelector("#btn_play");
-        // this.loop_count = this.shadow.querySelector("#loop_count");
-        // this.autoplay = this.shadow.querySelector("#autoplay");
-        // this.metronome = this.shadow.querySelector("#metronome");
-        // this.drums = this.shadow.querySelector("#drums");
-        // this.bpm_value = this.shadow.querySelector("#bpm_value");
-        // this.bpm_input = this.shadow.querySelector("#bpm_input");
-        // this.metronome_volume_input = this.shadow.querySelector("#metronome_volume");
-        // this.drums_volume_input = this.shadow.querySelector("#drums_volume");
-        // this.bpm_value.innerHTML = this.bpm_input.value;
-        // this.pattern = this.shadow.querySelector("#pattern");
         this.btn_play = this.querySelector("#btn_play");
         this.loop_count = this.querySelector("#loop_count");
         this.autoplay = this.querySelector("#autoplay");
@@ -64,8 +50,12 @@ export class StaveControls extends ExerciseWebcomponent{
         this.bpm_value = this.querySelector("#bpm_value");
         this.bpm_input = this.querySelector("#bpm_input");
         this.metronome_volume_input = this.querySelector("#metronome_volume");
+        this.metronome_volume_value = this.querySelector("#metronome_value");
         this.drums_volume_input = this.querySelector("#drums_volume");
+        this.drums_volume_value = this.querySelector("#drums_value");
         this.bpm_value.innerHTML = this.bpm_input.value;
+        this.drums_volume_value.innerHTML = this.drums_volume_input.value;
+        this.metronome_volume_value.innerHTML = this.metronome_volume_input.value;
         this.pattern = this.querySelector("#pattern");
 
 
@@ -81,7 +71,8 @@ export class StaveControls extends ExerciseWebcomponent{
             this.exercise.notify(this, this.#is_playing ? "play" : "stop", this.#is_playing);
         });
 
-        this.metronome_volume_input.addEventListener("change", (e) => {
+        this.metronome_volume_input.addEventListener("input", (e) => {
+            this.metronome_volume_value.innerHTML = e.currentTarget.value;
             this.exercise.notify(
                 this,
                 "metronome", 
@@ -89,7 +80,8 @@ export class StaveControls extends ExerciseWebcomponent{
             );
         });
 
-        this.drums_volume_input.addEventListener("change", (e) => {
+        this.drums_volume_input.addEventListener("input", (e) => {
+            this.drums_volume_value.innerHTML = e.currentTarget.value;
             this.exercise.notify(
                 this,
                 "drums", 

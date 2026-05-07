@@ -36,6 +36,7 @@ label{
 }
 
 hr{
+    margin: 0em;
     border: none;
     background-color: black;
     height: .05em;
@@ -60,17 +61,22 @@ summary{
     user-select: none;
     cursor: pointer;
 }
+summary > h1{
+    display: flex;
+    align-items: center;
+}
 summary::before{
     content: "+";
     height: 100%;
     width: 1em;
     font-size: 2.5em;
-    display: block;
-    text-align: center;
-    text-justify: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform .1s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 details:open > summary::before{
-    content: "-";
+    transform: rotate(45deg);
 }
 details > * > div{
     padding-top: 2em;
@@ -85,8 +91,20 @@ button{
     font-weight: 600;
     border-radius: none;
     background: none;
+    transition: .1s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+select{
+    transition: .1s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+button:active, select:active{
+    background: black;
+    color: white;
+}
+label{
+    user-select: none;
 }
 input, select{
+    user-select: none;
     font-family: "Inrina Serif";
     font-weight: 600;
     border: none;
@@ -119,11 +137,14 @@ select, input[type=number],button{
     border: .1em solid black;
     padding: .5em;
 }
+
 input:disabled, select:disabled{
     color: lightgrey;
+    background: white;
     border-color: lightgrey;
     accent-color: lightgrey;
 }
+
 input[type=checkbox]{
     accent-color: black;
 }
@@ -134,10 +155,38 @@ stave-controls{
         "bpm auto drum      pattern"
         "btn loop metronome pattern"
     ;
+    justify-items: start;
+    align-items: center;
 }
-#title{
+stave-controls > * {
     width: 100%;
-    text-align: center;
+}
+header{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     margin-top: .5em;
     margin-bottom: .5em;
 }
+header > * {
+    text-align: center;
+}
+.horiz{
+    flex-direction: row;
+    gap: .5em;
+}
+a,
+a:hover,
+a:visited {
+    color: black;
+    font-style: italic;
+}
+a{
+    text-decoration: none;
+}
+a:hover{
+    text-decoration: underline;
+}
+

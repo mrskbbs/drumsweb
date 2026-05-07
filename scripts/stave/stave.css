@@ -10,10 +10,9 @@
     top: 0em;
     display: block;
     height: 100%;
-    width: 1.5em;
+    width: 2em;
     transition-duration: 100ms;
-    transition: transform cubic-bezier(0.165, 0.84, 0.44, 1);
-    /* border: .1em solid black; */
+    transition: transform linear;
     background-color: white;
     mix-blend-mode: difference;
 }
