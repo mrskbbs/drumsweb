@@ -1,20 +1,29 @@
+/*
+A base class for all the pattern based exercises where 
+you generate patterns and notes (manually, procedurally) that
+you can select in stave controls
+*/
+
 import { Exercise } from "/scripts/core/exercise.js";
 import { StaveRenderer } from "/scripts/stave/stave_render.js";
 import { StaveControls } from "/scripts/stave/stave_controls.js";
 import { StaveSound } from "/scripts/stave/stave_sound.js";
 
-class RhythmExercise extends Exercise { 
+export class PatternExerciseBase extends Exercise { 
     renderer;
     sound;
     controls;
     player;
-    notes = [];
-    patterns = [];
+    notes;
+    patterns;
 
     constructor(player){
         super();
         this.player = player;
         this.player.subscribe(this);
+
+        this.patterns = new Map();
+        this.notes = new Map();
     }
 
     notify(sender, event, value){
@@ -96,65 +105,10 @@ class RhythmExercise extends Exercise {
         }
     }
 
-    generatePatternsAndNotes(){
-        /* 
-           procedural generation of patterns 
-           true - snare
-           false - rest note
-           we need all combinations for four notes, and we have two options -> 2^4
-        */
-        for(let i = 1; i < Math.pow(2, 4); i++){
-            // little bitwise op magic
-            this.patterns.push([
-                Boolean(i & 1), // 1st rightmost bit is 1?
-                Boolean(i & 2), // 2nd rightmost bit is 2? etc.
-                Boolean(i & 4),
-                Boolean(i & 8),
-            ]);
-
-            this.notes.push(this.createNote([
-                Boolean(i & 1), // 1st rightmost bit is 1?
-                Boolean(i & 2), // 2nd rightmost bit is 2? etc.
-                Boolean(i & 4),
-                Boolean(i & 8),
-            ]));
-        }
-    }
-
-    createNote(pattern){
-        const counts = [1, "e", "&", "a"];
-
-        return [].concat(pattern, pattern, pattern, pattern)
-            .map(
-                (v, i) => {
-                    const note = v 
-                        ? new Vex.Flow.StaveNote({clef: "percussion", keys: ["c/5"], duration: "16"}) 
-                        : new Vex.Flow.StaveNote({keys: ["c/5"], duration: "16r"});
-
-                    note.addModifier(
-                        0,
-                        new Vex.Flow.Annotation(String(counts[i % 4]))
-                          .setVerticalJustification(Vex.Flow.Annotation.VerticalJustify.TOP)
-                          .setJustification(Vex.Flow.Annotation.Justify.CENTER),
-                    );
-
-                    if (v) {
-                        note.addModifier(
-                            0,
-                            new Vex.Flow.Annotation(i % 2 == 0 ? "R" : "L")
-                              .setVerticalJustification(Vex.Flow.Annotation.VerticalJustify.BOTTOM)
-                              .setJustification(Vex.Flow.Annotation.Justify.CENTER),
-                        );        
-                    }
-
-                    if(i % 4 === 0) counts[0] += 1;
-
-                    return note;
-                }
-            );
+    generateNotes(){
+        throw new Error("Method must be defined");
     }
 }
-
 
 const template = document.createElement("template");
 template.innerHTML = 
@@ -165,16 +119,16 @@ template.innerHTML =
 </div>
 `;
 
-export class RhythmExerciseWebcomponent extends HTMLElement{
+export class PatternExerciseBaseWebcomponent extends HTMLElement{
     exercise;
 
-    constructor(player){
+    constructor(player, ExerciseClass){
         super();
 
         this.innerHTML = template.innerHTML; 
 
-        this.exercise = new RhythmExercise(player); 
-        this.exercise.generatePatternsAndNotes();
+        this.exercise = new ExerciseClass(player); 
+        this.exercise.generateNotes();
     }
 
     connectedCallback(){
@@ -188,19 +142,9 @@ export class RhythmExerciseWebcomponent extends HTMLElement{
         this.exercise.sound = new StaveSound(this.exercise, 16, 4);
         this.exercise.controls = new StaveControls(
             this.exercise,
-            //TODO: there is gotta be a better way, but im too tired to think on how to improve it 
-            this.exercise.patterns.map((p, i) => {
-                const counts = ["1", "e", "&", "a"];
-                const res = [];
-                for(let i = 0; i < p.length; i++){
-                    if (p[i]) res.push(counts[i]);
-                }
-
-                return {
-                    text: res.join(),
-                    value: i,
-                };
-            })
+            this.exercise.notes.keys().map(
+                (v, i) => new Object({ text: v, value: i })
+            ).toArray(),
         );
 
         this.querySelector("#renderer_tmpl")
@@ -209,5 +153,3 @@ export class RhythmExerciseWebcomponent extends HTMLElement{
             .replaceWith(this.exercise.controls);
     }
 }
-
-customElements.define("rhythm-exercise", RhythmExerciseWebcomponent);

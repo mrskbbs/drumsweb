@@ -1,6 +1,6 @@
 import { slidersProgressFix } from "./scripts/utils.js";
 import { Player } from "/scripts/core/player.js";
-import { RhythmExerciseWebcomponent } from "/scripts/exercises/rhytm.js";
+import { RhythmExerciseWebcomponent } from "/scripts/exercises/rhythm.js";
 
 const player = new Player();
 

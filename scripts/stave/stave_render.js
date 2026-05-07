@@ -25,7 +25,9 @@ export class StaveRenderer extends ExerciseWebcomponent {
         this.#num_beats = num_beats;
         this.#beat_value = beat_value;
         this.#bpm = bpm;
-        this.#note = this.exercise.notes[note_ind];
+        this.#note = this.exercise.notes.get(
+            this.exercise.notes.keys().toArray()[note_ind]
+        );
     }
 
     connectedCallback(){
@@ -36,7 +38,9 @@ export class StaveRenderer extends ExerciseWebcomponent {
     }
     
     changeNotes(ind){
-        this.#note = this.exercise.notes[ind];
+        this.#note = this.exercise.notes.get(
+            this.exercise.notes.keys().toArray()[ind]
+        );
 
         this.#render();
     }

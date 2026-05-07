@@ -9,6 +9,7 @@ export class StaveSound extends ExerciseComponent{
         super(exercise);
         
         this.notes_ind = 0;
+        this.notes = this.exercise.notes.values().toArray();
         this.loop_ind = 0;
 
         this.sequence_player = undefined;
@@ -50,7 +51,7 @@ export class StaveSound extends ExerciseComponent{
     }
 
     play(){
-        const cur_note = this.exercise.notes[this.notes_ind];
+        const cur_note = this.notes[this.notes_ind];
         this.sequence_ind = 0;
         this.loop_ind = 0;
         this.metronome_ind = 0;
@@ -98,13 +99,12 @@ export class StaveSound extends ExerciseComponent{
     changeNotes(ind){
         this.stop();
 
-        this.sequence_player.cancel(0);
         this.sequence_player.clear();
         this.sequence_player.dispose();
 
         this.sequence_player = undefined;
 
-        if(ind < 0 || ind >= this.exercise.notes.length)
+        if(ind < 0 || ind >= this.notes.length)
             throw new Error("Invalid note index");
 
         this.notes_ind = ind;
@@ -114,7 +114,7 @@ export class StaveSound extends ExerciseComponent{
         this.stop();
         this.notes_ind++;
 
-        if(this.notes_ind >= this.exercise.notes.length){
+        if(this.notes_ind >= this.notes.length){
             this.notes_ind = 0;
             return;
         }
