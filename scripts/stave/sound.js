@@ -2,14 +2,10 @@ import { ExerciseComponent } from "/scripts/core/exercise_component.js";
 import { vexFlowToMidi } from "../utils.js";
 
 export class StaveSound extends ExerciseComponent{
-    autoplay_on = false;
-    loop_count = 2;
-
     constructor(exercise, sequence_measure, metronome_measure){
         super(exercise);
         
         this.notes_ind = 0;
-        this.notes = this.exercise.notes.values().toArray();
         this.loop_ind = 0;
 
         this.sequence_player = undefined;
@@ -44,27 +40,27 @@ export class StaveSound extends ExerciseComponent{
                 this.metronome_ind === 0 ? "A6" : "A5", 
                 "32n", 
                 time, 
-                0.1
+                0.75,
             );
-            this.metronome_ind = (this.metronome_ind + 1) % 4;
+            this.metronome_ind = (this.metronome_ind + 1) % this.metronome_measure;
         }, `${this.metronome_measure}n`);
     }
 
     play(){
-        const cur_note = this.notes[this.notes_ind];
+        const cur_note = this.exercise.notes.get(this.exercise.notes_list[this.notes_ind]);
         this.sequence_ind = 0;
         this.loop_ind = 0;
         this.metronome_ind = 0;
         this.sequence_player = new Tone.Sequence(
             (time, note) => {
                 if(note !== undefined)
-                    this.drums_sampler.triggerAttackRelease(vexFlowToMidi[note], "16n", time, 0.05);
+                    this.drums_sampler.triggerAttackRelease(vexFlowToMidi[note], `${this.sequence_measure}n`, time, 0.5);
                 Tone.Draw.schedule(
-                    () =>  {
+                    (time) =>  {
                         this.exercise.notify(
                             this, 
                             "cursor_move", 
-                            { x: 1.5 * cur_note[this.sequence_ind].getAbsoluteX() }
+                            cur_note[this.sequence_ind].getBoundingBox(),
                         );
                         this.sequence_ind++;
 
@@ -73,10 +69,12 @@ export class StaveSound extends ExerciseComponent{
                             this.loop_ind++;
                         }
                         if(this.autoplay_on && this.loop_ind >= this.loop_count){
-                            this.nextNote();
+                            Tone.Draw.schedule(() => this.nextNote(), time);
                         }
                     }
                 , time);
+
+                
             }, 
             cur_note.map((v) => v.isRest() ? undefined : v.getKeys()[0]),
             `${this.sequence_measure}n`,
@@ -99,12 +97,12 @@ export class StaveSound extends ExerciseComponent{
     changeNotes(ind){
         this.stop();
 
-        this.sequence_player.clear();
-        this.sequence_player.dispose();
+        this.sequence_player?.clear();
+        this.sequence_player?.dispose();
 
         this.sequence_player = undefined;
 
-        if(ind < 0 || ind >= this.notes.length)
+        if(ind < 0 || ind >= this.exercise.notes_list.length)
             throw new Error("Invalid note index");
 
         this.notes_ind = ind;
@@ -114,7 +112,7 @@ export class StaveSound extends ExerciseComponent{
         this.stop();
         this.notes_ind++;
 
-        if(this.notes_ind >= this.notes.length){
+        if(this.notes_ind >= this.exercise.notes_list.length){
             this.notes_ind = 0;
             return;
         }

@@ -18,7 +18,7 @@ template.innerHTML =
 </label>
 <label style="grid-area: drum">
     <span>Drums volume &mdash; <span id="drums_value"></span></span>
-    <input id="drums_volume" type="range" min="0" max="100" />
+    <input id="drums_volume" type="range" min="0" max="100" value="0" />
 </label>
 <label style="grid-area: metronome">
     <span>Metronome volume &mdash; <span id="metronome_value"></span></span>
@@ -53,9 +53,38 @@ export class StaveControls extends ExerciseWebcomponent{
         this.metronome_volume_value = this.querySelector("#metronome_value");
         this.drums_volume_input = this.querySelector("#drums_volume");
         this.drums_volume_value = this.querySelector("#drums_value");
+
         this.bpm_value.innerHTML = this.bpm_input.value;
         this.drums_volume_value.innerHTML = this.drums_volume_input.value;
         this.metronome_volume_value.innerHTML = this.metronome_volume_input.value;
+
+        this.exercise.notify(
+            this,
+            "bpm", 
+            Number(this.bpm_input.value),
+        );
+        this.exercise.notify(
+            this,
+            "drums", 
+            Number(this.drums_volume_input.value),
+        );
+        this.exercise.notify(
+            this,
+            "metronome", 
+            Number(this.metronome_volume_input.value),
+        );
+        this.exercise.notify(
+            this,
+            "autoplay", 
+            Boolean(this.autoplay.checked),
+        );
+        this.exercise.notify(
+            this,
+            "loop_count", 
+            Number(this.loop_count.value),
+        );
+
+
         this.pattern = this.querySelector("#pattern");
 
 

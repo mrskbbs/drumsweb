@@ -25,9 +25,8 @@ export class StaveRenderer extends ExerciseWebcomponent {
         this.#num_beats = num_beats;
         this.#beat_value = beat_value;
         this.#bpm = bpm;
-        this.#note = this.exercise.notes.get(
-            this.exercise.notes.keys().toArray()[note_ind]
-        );
+        this.scale_factor = 1.5;
+        this.#note = this.exercise.notes.get(this.exercise.notes_list[note_ind]);
     }
 
     connectedCallback(){
@@ -38,22 +37,19 @@ export class StaveRenderer extends ExerciseWebcomponent {
     }
     
     changeNotes(ind){
-        this.#note = this.exercise.notes.get(
-            this.exercise.notes.keys().toArray()[ind]
-        );
+        this.#note = this.exercise.notes.get(this.exercise.notes_list[ind]);
 
         this.#render();
     }
 
     cursorSpeed(bpm){
         // insane hack
-        const duration = ((60 / bpm) * 100) + ((60 / bpm) * 100)*(1/5);
+        const duration = ((60 / bpm) * 100) * 1;
         this.pos_block.style.transitionDuration = `${duration}ms`;    
     }
 
     cursorMove(bb){
-        this.pos_block.style.width = `${bb.width+50}px`;
-        this.pos_block.style.transform = `translateX(${bb.x}px)`;
+        this.pos_block.style.transform = `translateX(${bb.x * this.scale_factor}px)`;
     }
 
     #render(){
@@ -82,12 +78,12 @@ export class StaveRenderer extends ExerciseWebcomponent {
 
         new Vex.Flow.Formatter().joinVoices([voice]).format([voice], 400);
 
-        context.scale(1.5, 1.5);
+        context.scale(this.scale_factor, this.scale_factor);
         voice.draw(context, stave);
         stave.setContext(context).draw();
 
         this.cursorSpeed(this.#bpm);
-        this.cursorMove({ x: this.#note[0].getAbsoluteX() * 1.5 });
+        this.cursorMove(this.#note[0].getBoundingBox());
     }
 }
 

@@ -1,11 +1,7 @@
-import { PatternExerciseBase, PatternExerciseBaseWebcomponent } from "./base_patterns.js";
+import { PatternExerciseBase, PatternExerciseBaseWebcomponent } from "/scripts/exercises/bases/patterns.js";
 
 class RhythmExercise extends PatternExerciseBase { 
     counts = [1, "e", "&", "a"];
-
-    constructor(player){
-        super(player);
-    }
 
     generateNotes(){
         /* 
@@ -19,7 +15,7 @@ class RhythmExercise extends PatternExerciseBase {
             // little bitwise op magic
             const pattern = [
                 Boolean(i & 1), // 1st rightmost bit is 1?
-                Boolean(i & 2), // 2nd rightmost bit is 2? etc.
+                Boolean(i & 2), // 2nd rightmost bit is 1? etc.
                 Boolean(i & 4),
                 Boolean(i & 8),
             ];
@@ -31,16 +27,22 @@ class RhythmExercise extends PatternExerciseBase {
                 this.createNote(pattern),
             );
         }
+
+        this.notes_list = this.notes.keys().toArray().sort();
     }
 
     createNote(pattern){
+        /* 
+            1 & - RL
+            & - L 
+        */
         const counts = [...this.counts];
         return [].concat(pattern, pattern, pattern, pattern)
             .map(
                 (v, i) => {
                     const note = v 
-                        ? new Vex.Flow.StaveNote({clef: "percussion", keys: ["c/5"], duration: "16"}) 
-                        : new Vex.Flow.StaveNote({keys: ["c/5"], duration: "16r"});
+                        ? new Vex.Flow.StaveNote({clef: "percussion", keys: ["c/5"], duration: `${this.options.sequence_measure}`}) 
+                        : new Vex.Flow.StaveNote({keys: ["c/5"], duration: `${this.options.sequence_measure}r`});
 
                     note.addModifier(
                         0,
@@ -68,8 +70,16 @@ class RhythmExercise extends PatternExerciseBase {
 
 export class RhythmExerciseWebcomponent extends PatternExerciseBaseWebcomponent{
     constructor(player){
-        console.log(RhythmExercise);
-        super(player, RhythmExercise);
+        super(
+            player, 
+            RhythmExercise,
+            {
+                num_beats: 4,
+                beat_value: 4, // these two represent time signature like this: num_beats/beat_value
+                sequence_measure: 16,
+                metronome_measure: 4, // these two represent note duration 1/sequence_measure (i.e. 1/8, 1/16 etc.)
+            }
+        );
     }
 }
 

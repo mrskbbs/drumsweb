@@ -5,9 +5,9 @@ you can select in stave controls
 */
 
 import { Exercise } from "/scripts/core/exercise.js";
-import { StaveRenderer } from "/scripts/stave/stave_render.js";
-import { StaveControls } from "/scripts/stave/stave_controls.js";
-import { StaveSound } from "/scripts/stave/stave_sound.js";
+import { StaveRenderer } from "/scripts/stave/render.js";
+import { StaveControls } from "/scripts/stave/controls.js";
+import { StaveSound } from "/scripts/stave/sound.js";
 
 export class PatternExerciseBase extends Exercise { 
     renderer;
@@ -17,13 +17,14 @@ export class PatternExerciseBase extends Exercise {
     notes;
     patterns;
 
-    constructor(player){
+    constructor(player, options){
         super();
         this.player = player;
         this.player.subscribe(this);
 
-        this.patterns = new Map();
+        this.options = options;
         this.notes = new Map();
+        this.notes_list = [];
     }
 
     notify(sender, event, value){
@@ -121,30 +122,43 @@ template.innerHTML =
 
 export class PatternExerciseBaseWebcomponent extends HTMLElement{
     exercise;
-
-    constructor(player, ExerciseClass){
+    
+    constructor(player, ExerciseClass, options){
+        /*
+        Options syntax:
+            {
+                num_beats: Number,
+                beat_value: Number, // these two represent time signature like this: num_beats/beat_value
+                sequence_measure: Number,
+                metronome_measure: Number, // these two represent note duration 1/sequence_measure (i.e. 1/8, 1/16 etc.)
+            }
+        */
         super();
 
         this.innerHTML = template.innerHTML; 
-
-        this.exercise = new ExerciseClass(player); 
+        this.options = options;
+        this.exercise = new ExerciseClass(player, options); 
         this.exercise.generateNotes();
     }
 
     connectedCallback(){
         this.exercise.renderer = new StaveRenderer(
             this.exercise,
-            4,
-            4,
+            this.options.num_beats,
+            this.options.beat_value,
             Tone.Transport.bpm.value,
             0,
         );
-        this.exercise.sound = new StaveSound(this.exercise, 16, 4);
+        this.exercise.sound = new StaveSound(
+            this.exercise, 
+            this.options.sequence_measure, 
+            this.options.metronome_measure,
+        );
         this.exercise.controls = new StaveControls(
             this.exercise,
-            this.exercise.notes.keys().map(
+            this.exercise.notes_list.map(
                 (v, i) => new Object({ text: v, value: i })
-            ).toArray(),
+            ),
         );
 
         this.querySelector("#renderer_tmpl")
