@@ -15,4 +15,5 @@
     transition: transform linear;
     background-color: white;
     mix-blend-mode: difference;
+    will-change: transform;
 }

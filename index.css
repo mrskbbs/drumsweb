@@ -94,7 +94,7 @@ button{
     transition: .1s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 select{
-    transition: .1s cubic-bezier(0.165, 0.84, 0.44, 1);
+    transition: .25s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 button:active, select:active{
     background: black;
@@ -109,6 +109,8 @@ input, select{
     font-weight: 600;
     border: none;
     background: white;
+    /* transition: color background border-color accent-color .1s cubic-bezier(0.165, 0.84, 0.44, 1); */
+    transition: .25s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 input:focus, select:focus{

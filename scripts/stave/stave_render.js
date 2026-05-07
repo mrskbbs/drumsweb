@@ -19,10 +19,6 @@ export class StaveRenderer extends ExerciseWebcomponent {
 
     constructor(exercise, num_beats, beat_value, bpm, note_ind){
         super(exercise);
-        
-        // this.shadow = this.attachShadow({ mode: "open" });
-        // this.shadow.append(template.content.cloneNode(true));
-        
         this.innerHTML = template.innerHTML;
         
         // Init info for renderer
@@ -33,9 +29,6 @@ export class StaveRenderer extends ExerciseWebcomponent {
     }
 
     connectedCallback(){
-        // this.stave_canvas = this.shadow.querySelector("#stave_canvas");
-        // this.pos_block = this.shadow.querySelector("#stave_canvas > .pos_block");
-
         this.stave_canvas = this.querySelector("#stave_canvas");
         this.pos_block = this.querySelector("#stave_canvas > .pos_block");
 
@@ -49,7 +42,8 @@ export class StaveRenderer extends ExerciseWebcomponent {
     }
 
     cursorSpeed(bpm){
-        const duration = ((60 / bpm) * 100) * 0.6;
+        // insane hack
+        const duration = ((60 / bpm) * 100) + ((60 / bpm) * 100)*(1/5);
         this.pos_block.style.transitionDuration = `${duration}ms`;    
     }
 

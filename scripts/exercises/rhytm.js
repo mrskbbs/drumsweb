@@ -1,15 +1,3 @@
-// class RythmExerciseComponent extends HTMLElement{
-//     exercise;
-//
-//     constructor(ExerciseClass, template){
-//         super();
-//
-//         this.shadow = this.attachShadow({ mode: "open" });
-//         this.shadow.append(template.content.cloneNode(true));
-//
-//         this.exercise = new ExerciseClass();
-//     }
-// }
 import { Exercise } from "/scripts/core/exercise.js";
 import { StaveRenderer } from "/scripts/stave/stave_render.js";
 import { StaveControls } from "/scripts/stave/stave_controls.js";
@@ -183,9 +171,6 @@ export class RhythmExerciseWebcomponent extends HTMLElement{
     constructor(player){
         super();
 
-        // this.shadow = this.attachShadow({ mode: "open" });
-        // this.shadow.append(template.content.cloneNode(true));
-
         this.innerHTML = template.innerHTML; 
 
         this.exercise = new RhythmExercise(player); 
@@ -218,10 +203,8 @@ export class RhythmExerciseWebcomponent extends HTMLElement{
             })
         );
 
-        // this.shadow.querySelector("#renderer_tmpl")
         this.querySelector("#renderer_tmpl")
             .replaceWith(this.exercise.renderer);
-        // this.shadow.querySelector("#controls_tmpl")
         this.querySelector("#controls_tmpl")
             .replaceWith(this.exercise.controls);
     }
