@@ -1,4 +1,4 @@
-import { ExerciseWebcomponent } from "./assets/core/exercise_component.js";
+import { ExerciseWebcomponent } from "../core/exercise_component.js";
 
 const template = document.createElement("template");
 template.innerHTML =  

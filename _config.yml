@@ -22,7 +22,7 @@ title: drums
 email: mrskbbs@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
   Practise your drumming skills
-baseurl: "https://github.com/mrskbbs/drumsweb" # the subpath of your site, e.g. /blog
+baseurl: "/drumsweb" # the subpath of your site, e.g. /blog
 url: "https://mrskbbs.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 github_username:  mrskbbs
 

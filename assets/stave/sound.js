@@ -1,4 +1,4 @@
-import { ExerciseComponent } from "./assets/core/exercise_component.js";
+import { ExerciseComponent } from "../core/exercise_component.js";
 import { vexFlowToMidi } from "../utils.js";
 
 export class StaveSound extends ExerciseComponent{
@@ -20,7 +20,7 @@ export class StaveSound extends ExerciseComponent{
                 A5: "click.ogx", 
                 A6: "clickAccent.ogx",
             },
-            baseUrl: "/public/metronome/",
+            baseUrl: "./public/metronome/",
         }).toDestination();
 
         this.drums_sampler = new Tone.Sampler({
@@ -32,7 +32,7 @@ export class StaveSound extends ExerciseComponent{
                 "D2": "tom1.mp3",
                 "F#1": "hihat.mp3",
             },
-            baseUrl: "/public/drum/",
+            baseUrl: "./public/drum/",
         }).toDestination();
 
         this.metronome_player = new Tone.Loop((time) => {
