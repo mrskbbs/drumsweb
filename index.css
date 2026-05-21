@@ -1,22 +1,22 @@
 @font-face {
     font-family: "Inrina Serif";
     font-weight: normal;
-    src: url("/public/fonts/Inria_Serif/InriaSerif-Regular.ttf");
+    src: url("./public/fonts/Inria_Serif/InriaSerif-Regular.ttf");
 }
 @font-face {
     font-family: "Inrina Serif";
     font-weight: lighter;
-    src: url("/public/fonts/Inria_Serif/InriaSerif-Light.ttf");
+    src: url("./public/fonts/Inria_Serif/InriaSerif-Light.ttf");
 }
 @font-face {
     font-family: "Inrina Serif";
     font-weight: bold;
-    src: url("/public/fonts/Inria_Serif/InriaSerif-Bold.ttf");
+    src: url("./public/fonts/Inria_Serif/InriaSerif-Bold.ttf");
 }
 
 @font-face {
     font-family: "Playfair Display";
-    src: url("/public/fonts/Playfair_Display/PlayfairDisplay-VariableFont_wght.ttf");
+    src: url("./public/fonts/Playfair_Display/PlayfairDisplay-VariableFont_wght.ttf");
 }
 
 html, body {

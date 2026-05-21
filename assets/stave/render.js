@@ -3,7 +3,7 @@ import { ExerciseWebcomponent } from "./assets/core/exercise_component.js";
 const template = document.createElement("template");
 template.innerHTML =  
 `
-<link rel="stylesheet" href="scripts/stave/stave.css">
+<link rel="stylesheet" href="./assets/stave/stave.css">
 <div id="stave_canvas">
     <div class="pos_block"></div>
 </div>

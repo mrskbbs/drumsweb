@@ -1,4 +1,4 @@
-import { PatternExerciseBase, PatternExerciseBaseWebcomponent } from "./assets/exercises/bases/patterns.js";
+import { PatternExerciseBase, PatternExerciseBaseWebcomponent } from "./bases/patterns.js";
 
 class RhythmExercise extends PatternExerciseBase { 
     counts = [1, "e", "&", "a"];
