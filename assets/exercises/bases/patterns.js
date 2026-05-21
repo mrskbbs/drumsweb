@@ -4,10 +4,10 @@ you generate patterns and notes (manually, procedurally) that
 you can select in stave controls
 */
 
-import { Exercise } from "/scripts/core/exercise.js";
-import { StaveRenderer } from "/scripts/stave/render.js";
-import { StaveControls } from "/scripts/stave/controls.js";
-import { StaveSound } from "/scripts/stave/sound.js";
+import { Exercise } from "/assets/core/exercise.js";
+import { StaveRenderer } from "/assets/stave/render.js";
+import { StaveControls } from "/assets/stave/controls.js";
+import { StaveSound } from "/assets/stave/sound.js";
 
 export class PatternExerciseBase extends Exercise { 
     renderer;

@@ -1,4 +1,4 @@
-import { PatternExerciseBase, PatternExerciseBaseWebcomponent } from "/scripts/exercises/bases/patterns.js";
+import { PatternExerciseBase, PatternExerciseBaseWebcomponent } from "/assets/exercises/bases/patterns.js";
 
 class StickingExercise extends PatternExerciseBase { 
 
