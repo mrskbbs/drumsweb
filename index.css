@@ -19,6 +19,11 @@
     src: url("/public/fonts/Playfair_Display/PlayfairDisplay-VariableFont_wght.ttf");
 }
 
+html, body {
+    height: 100%;
+    width: 100%;
+}
+
 label{
     display: flex;
     flex-direction: column;
@@ -28,6 +33,8 @@ label{
     font-family: "Inrina Serif";
     font-weight: bold;
     font-size: 1em;
+    scrollbar-color: black white;
+    scrollbar-width: thin;
 }
 
 ::selection {
@@ -191,4 +198,6 @@ a{
 a:hover{
     text-decoration: underline;
 }
-
+.patterns_inner{
+    overflow-x: scroll;
+}

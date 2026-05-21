@@ -32,10 +32,9 @@ class RhythmExercise extends PatternExerciseBase {
     }
 
     createNote(pattern){
-        /* 
-            1 & - RL
-            & - L 
-        */
+        const one_and = [true, false, true, false]; // 1 &
+        const and = [false, false, true, false]; // &
+
         const counts = [...this.counts];
         return [].concat(pattern, pattern, pattern, pattern)
             .map(
@@ -52,12 +51,22 @@ class RhythmExercise extends PatternExerciseBase {
                     );
 
                     if (v) {
+                        let annotation = i % 2 === 0; // default behaviour
+                        
+                        // overwrites for certain cases
+                        if(
+                            pattern.every((v, i) => one_and[i] === v) ||
+                            pattern.every((v, i) => and[i] === v)
+                        ){  
+                            annotation = (i / 2) % 2 === 0;
+                        }
+
                         note.addModifier(
                             0,
-                            new Vex.Flow.Annotation(i % 2 == 0 ? "R" : "L")
+                            new Vex.Flow.Annotation(annotation ? "R" : "L")
                               .setVerticalJustification(Vex.Flow.Annotation.VerticalJustify.BOTTOM)
                               .setJustification(Vex.Flow.Annotation.Justify.CENTER),
-                        );        
+                        );
                     }
 
                     if(i % 4 === 0) counts[0] += 1;

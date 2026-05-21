@@ -114,7 +114,7 @@ export class PatternExerciseBase extends Exercise {
 const template = document.createElement("template");
 template.innerHTML = 
 `
-<div>
+<div class="patterns_inner">
     <template id="renderer_tmpl"></template>
     <template id="controls_tmpl"></template>
 </div>
