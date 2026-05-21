@@ -1,7 +1,7 @@
-import { slidersProgressFix } from "/assets/utils.js";
-import { Player } from "/assets/core/player.js";
-import { RhythmExerciseWebcomponent } from "/assets/exercises/rhythm.js";
-import { StickingExerciseWebcomponent} from "/assets/exercises/sticking.js";
+import { slidersProgressFix } from "./assets/utils.js";
+import { Player } from "./assets/core/player.js";
+import { RhythmExerciseWebcomponent } from "./assets/exercises/rhythm.js";
+import { StickingExerciseWebcomponent} from "./assets/exercises/sticking.js";
 
 const player = new Player();
 

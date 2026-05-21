@@ -1,4 +1,4 @@
-import { ExerciseComponent } from "/assets/core/exercise_component.js";
+import { ExerciseComponent } from "./assets/core/exercise_component.js";
 import { vexFlowToMidi } from "../utils.js";
 
 export class StaveSound extends ExerciseComponent{
