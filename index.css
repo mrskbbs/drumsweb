@@ -130,14 +130,32 @@ input[type=range]{
     background: transparent;
     cursor: pointer;
 }
-input[type=range]::-webkit-slider-runnable-track,
+input[type=range]::-webkit-slider-runnable-track{
+    -webkit-appearance: none;
+    background: linear-gradient(90deg, black var(--progress), white 0%);
+    border: .1em solid black;
+    border-radius: .25em;
+    height: 50%;
+    box-sizing: border-box;
+}
 input[type=range]::-moz-range-track {
     background: linear-gradient(90deg, black var(--progress), white 0%);
     border: .1em solid black;
     border-radius: .25em;
     height: 30%;
 }
-input[type=range]::-webkit-slider-thumb,
+input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    background: black;
+    height: 1em;
+    border-radius: 100%;
+    aspect-ratio: 1/1;
+    border: none;
+    /* this is the most evil ass hack */
+    /* and its sole purporse is to align  */
+    /* the goddamn thumb with ends of a slider */
+    transform: translate(calc(((var(--progress) - 50%) / 50) * 5), -25%);
+}
 input[type=range]::-moz-range-thumb{
     background: black;
     border: none;
