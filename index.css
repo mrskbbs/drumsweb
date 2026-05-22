@@ -19,16 +19,19 @@
     src: url("./public/fonts/Playfair_Display/PlayfairDisplay-VariableFont_wght.ttf");
 }
 
-html, body {
+html{
     height: 100%;
     width: 100%;
     overflow-x: hidden;
     margin: 0em;
     padding: 0em;
+    box-sizing: border-box;
 }
-body {
-    justify-self: center;
-    width: 99%;
+body{
+    margin-right: 1em;
+    margin-left: 1em;
+    margin-top: 1em;
+    min-height: 100vh;
 }
 label{
     display: flex;
