@@ -22,8 +22,14 @@
 html, body {
     height: 100%;
     width: 100%;
+    overflow-x: hidden;
+    margin: 0em;
+    padding: 0em;
 }
-
+body {
+    justify-self: center;
+    width: 99%;
+}
 label{
     display: flex;
     flex-direction: column;
@@ -218,4 +224,8 @@ a:hover{
 }
 .patterns_inner{
     overflow-x: scroll;
+}
+.value_display{
+    width: 3ch;
+    display: inline-flex;
 }

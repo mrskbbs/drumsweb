@@ -4,7 +4,7 @@ const template = document.createElement("template");
 template.innerHTML = 
 `
 <label style="grid-area: bpm">
-    <span>BPM &mdash; <span id="bpm_value"></span></span>
+    <span>BPM &mdash; <span id="bpm_value" class="value_display"></span></span>
     <input id="bpm_input" type="range" min="30" max="250"/>
 </label>
 <button style="grid-area: btn" type="button" id="btn_play">Play</button>
@@ -17,11 +17,11 @@ template.innerHTML =
     <input id="loop_count" type="number" value="2" />
 </label>
 <label style="grid-area: drum">
-    <span>Drums volume &mdash; <span id="drums_value"></span></span>
+    <span>Drums volume &mdash; <span id="drums_value" class="value_display"></span></span>
     <input id="drums_volume" type="range" min="0" max="100" value="0" />
 </label>
 <label style="grid-area: metronome">
-    <span>Metronome volume &mdash; <span id="metronome_value"></span></span>
+    <span>Metronome volume &mdash; <span id="metronome_value" class="value_display"></span></span>
     <input id="metronome_volume" type="range" min="0" max="100" />
 </label>
 <label style="grid-area: pattern">
